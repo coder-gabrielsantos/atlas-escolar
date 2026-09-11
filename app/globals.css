@@ -1,0 +1,116 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--canvas);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-border: var(--line);
+  --color-input: var(--line);
+  --color-ring: var(--teal);
+  --color-primary: var(--navy);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--lemon);
+  --color-secondary-foreground: var(--navy);
+  --color-muted: #eef0ec;
+  --color-muted-foreground: var(--muted);
+  --color-card: #ffffff;
+  --color-card-foreground: var(--ink);
+  --color-popover: #ffffff;
+  --color-popover-foreground: var(--ink);
+  --color-accent: var(--teal-soft);
+  --color-accent-foreground: var(--teal);
+  --color-destructive: #c7564c;
+  --radius-sm: 0.55rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.3rem;
+}
+
+:root {
+  --canvas: #f7f7f3;
+  --ink: #17242e;
+  --muted: #66737a;
+  --navy: #172b35;
+  --teal: #087c70;
+  --teal-soft: #e1f2ed;
+  --lime: #c8ec51;
+  --lemon: #eef6bf;
+  --sand: #e7e4d8;
+  --line: #e1e3dd;
+  --line-strong: #cbd0c9;
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--navy);
+  --primary-foreground: #ffffff;
+  --secondary: var(--lemon);
+  --secondary-foreground: var(--navy);
+  --muted-foreground: var(--muted);
+  --accent: var(--teal-soft);
+  --accent-foreground: var(--teal);
+  --destructive: #c7564c;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--teal);
+  --radius: 0.8rem;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--canvas); font-family: var(--font-geist-sans), Arial, sans-serif; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+::selection { background: #c8ec51; color: #172b35; }
+
+.atlas-field-label {
+  display: block;
+  color: rgb(255 255 255 / 42%);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.atlas-select {
+  width: 100%;
+  border-color: rgb(255 255 255 / 10%);
+  background: rgb(255 255 255 / 6%);
+  color: white;
+  box-shadow: none;
+  font-size: 12px;
+}
+
+.atlas-select:hover { background: rgb(255 255 255 / 9%); }
+.atlas-select svg { color: rgb(255 255 255 / 42%); }
+
+.atlas-card {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 8px 30px rgb(23 35 46 / 4%);
+}
+
+.atlas-eyebrow {
+  color: var(--teal);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.atlas-section-title {
+  margin-top: 6px;
+  font-size: clamp(1.55rem, 2.4vw, 2.15rem);
+  font-weight: 650;
+  letter-spacing: -.045em;
+}
+
+.atlas-section-copy { margin-top: 5px; color: var(--muted); font-size: 14px; }
+.atlas-card-title { font-size: 16px; font-weight: 650; letter-spacing: -.025em; }
+.atlas-card-copy { margin-top: 4px; color: var(--muted); font-size: 12px; }
