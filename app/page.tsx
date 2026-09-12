@@ -99,7 +99,7 @@ export default function OverviewPage() {
             </div>
           </article>
 
-          <article className="atlas-card p-6">
+          <article className="atlas-card flex flex-col justify-center p-6">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--muted)]">
                 Registros ENEM
@@ -116,7 +116,7 @@ export default function OverviewPage() {
             </p>
           </article>
 
-          <article className="atlas-card p-6">
+          <article className="atlas-card flex flex-col justify-center p-6">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--muted)]">
                 Matemática
@@ -135,7 +135,7 @@ export default function OverviewPage() {
             </p>
           </article>
 
-          <article className="atlas-card p-6">
+          <article className="atlas-card flex flex-col justify-center p-6">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--muted)]">
                 Conectividade
