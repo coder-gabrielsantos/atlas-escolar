@@ -224,16 +224,14 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
               {PAGE_NAMES[pathname] ?? 'Atlas'}
             </span>
           </p>
-          <div className="flex items-center gap-3">
-            <span className="hidden rounded-xl border border-[var(--line)] bg-white px-3.5 py-2 text-xs font-medium text-[var(--muted)] shadow-sm sm:block">
-              Censo/ENEM {schoolContext.school.year} · SAEB 2023
-            </span>
-            <p className="hidden max-w-[240px] truncate text-xs text-[var(--muted)] md:block">
-              {schoolContext.school.name}
-            </p>
-          </div>
+          <p className="max-w-[240px] truncate text-xs text-[var(--muted)] sm:max-w-[360px]">
+            {schoolContext.school.name}
+          </p>
         </header>
         {children}
+        <footer className="border-t border-[var(--line)] px-5 py-5 text-center text-xs text-[var(--muted)] sm:px-8 lg:px-10">
+          Censo/ENEM {schoolContext.school.year} · SAEB 2023
+        </footer>
       </div>
 
       <nav

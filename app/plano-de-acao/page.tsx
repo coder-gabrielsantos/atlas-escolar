@@ -8,7 +8,6 @@ import {
   CalendarClock,
   Check,
   ClipboardCheck,
-  MapPin,
   Target,
   UsersRound,
 } from 'lucide-react';
@@ -118,7 +117,7 @@ export default function ActionPlanPage() {
   return (
     <AtlasShell>
       <div className="mx-auto max-w-[1320px] px-5 py-7 sm:px-8 lg:px-10 lg:py-9">
-        <section className="flex flex-col justify-between gap-6 xl:flex-row xl:items-end">
+        <section>
           <div>
             <p className="atlas-eyebrow">Da análise à prática</p>
             <h1 className="mt-2 text-[clamp(2rem,4vw,3.4rem)] font-semibold leading-[1.02] tracking-[-0.052em]">
@@ -128,15 +127,6 @@ export default function ActionPlanPage() {
               Dois movimentos objetivos para transformar sinais do diagnóstico
               em acompanhamento.
             </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-2 rounded-xl border border-[var(--line)] bg-white px-3.5 py-2.5 text-sm font-medium">
-              <Building2 size={15} /> {context.school.name}
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-xl border border-[var(--line)] bg-white px-3.5 py-2.5 text-sm text-[var(--muted)]">
-              <MapPin size={15} /> {context.school.municipality} ·{' '}
-              {context.school.state}
-            </span>
           </div>
         </section>
 

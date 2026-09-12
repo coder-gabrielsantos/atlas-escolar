@@ -3,10 +3,8 @@
 import Link from 'next/link';
 import {
   ArrowRight,
-  Building2,
   CircleAlert,
   Database,
-  MapPin,
   Sparkles,
   UsersRound,
   Wifi,
@@ -81,7 +79,7 @@ export default function OverviewPage() {
   return (
     <AtlasShell>
       <div className="mx-auto max-w-[1500px] px-5 py-7 sm:px-8 lg:px-10 lg:py-9">
-        <section className="flex flex-col justify-between gap-6 xl:flex-row xl:items-end">
+        <section>
           <div>
             <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.13em] text-[var(--teal)]">
               <Sparkles size={14} /> Panorama da escola
@@ -90,18 +88,8 @@ export default function OverviewPage() {
               {greeting()}.
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--muted)] sm:text-base">
-              Indicadores reais do Censo Escolar e ENEM 2025, com contexto
-              estadual do SAEB 2023.
+              Indicadores do Censo Escolar, ENEM e contexto estadual do SAEB.
             </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-2 rounded-xl border border-[var(--line)] bg-white px-3.5 py-2.5 text-sm font-medium">
-              <Building2 size={16} /> {context.school.name}
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-xl border border-[var(--line)] bg-white px-3.5 py-2.5 text-sm text-[var(--muted)]">
-              <MapPin size={16} /> {context.school.municipality} ·{' '}
-              {context.school.state}
-            </span>
           </div>
         </section>
 
