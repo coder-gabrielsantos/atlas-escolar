@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useAtlas } from '@/components/atlas-provider';
 import { WebMcpTools } from '@/components/webmcp-tools';
-import { ACCESS_PROFILES, AccessProfile } from '@/lib/atlas-data';
+import { ACCESS_PROFILES, AccessProfile, DATA_MANIFEST } from '@/lib/atlas-data';
 import {
   Select,
   SelectContent,
@@ -65,11 +65,11 @@ function Filters({ onDone }: { onDone?: () => void }) {
       </div>
       <div className="space-y-2">
         <label className="atlas-field-label" htmlFor="atlas-school">Escola</label>
-        <Select value={atlas.schoolName} onValueChange={(value) => value && atlas.setSchoolName(value)}>
+        <Select value={atlas.schoolCode} onValueChange={(value) => value && atlas.setSchoolCode(value)}>
           <SelectTrigger id="atlas-school" className="atlas-select min-h-11 h-auto"><SelectValue /></SelectTrigger>
           <SelectContent>
             {atlas.schools.map((school) => (
-              <SelectItem key={school.name} value={school.name}>{school.name}</SelectItem>
+              <SelectItem key={school.code} value={school.code}>{school.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -165,10 +165,10 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
         <div className="mt-7 rounded-2xl border border-white/10 bg-white/[0.045] p-4">
           <div className="mb-3 flex items-center gap-2 text-xs text-white/58">
             <Database size={14} className="text-[var(--lime)]" />
-            Base demonstrativa ativa
+            Base real validada
           </div>
           <p className="text-[11px] leading-relaxed text-white/36">
-            9 escolas · indicadores sintéticos de 2024.
+            {DATA_MANIFEST.acceptance.linkedSchools.toLocaleString('pt-BR')} escolas vinculadas · {DATA_MANIFEST.acceptance.municipalities} municípios.
           </p>
         </div>
       </aside>
@@ -205,7 +205,7 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
           </p>
           <div className="flex items-center gap-3">
             <span className="hidden rounded-xl border border-[var(--line)] bg-white px-3.5 py-2 text-xs font-medium text-[var(--muted)] shadow-sm sm:block">
-              Dados atualizados · {schoolContext.school.year}
+              Censo/ENEM {schoolContext.school.year} · SAEB 2023
             </span>
             <div className="grid size-9 place-items-center rounded-full bg-[var(--navy)] text-[11px] font-semibold text-white">{initials}</div>
             <div className="hidden max-w-[170px] sm:block">

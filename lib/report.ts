@@ -13,28 +13,29 @@ function slugify(value: string) {
 }
 
 export function buildReport(context: SchoolContext) {
-  const gap = context.socioeconomicGap;
+  const lowestArea = context.lowestPerformanceArea;
   const lines = [
     `Escola: ${context.school.name} (${context.school.municipality}/${context.school.state})`,
     `Ano de referencia: ${context.school.year}`,
     '',
     'INDICADORES-CHAVE',
-    `Indice de infraestrutura: ${context.infrastructureScore.toFixed(1)} / 10`,
-    `Conectividade: ${context.connectivityStatus} (${context.connectivityScore.toFixed(1)} / 10)`,
-    `Desempenho: ${context.school.performance} pontos`,
-    `Gap versus contexto socioeconomico: ${gap >= 0 ? '+' : ''}${gap.toFixed(0)} pontos`,
-    `Matriculas: ${context.school.enrollments}`,
+    `Indice de infraestrutura: ${(context.infrastructureScore * 10).toFixed(1)}%`,
+    `Conectividade: ${context.connectivityStatus} (${(context.connectivityScore * 10).toFixed(1)}%)`,
+    `Registros ENEM: ${context.school.records}`,
+    `Menor media valida: ${lowestArea ? `${lowestArea.label} - ${lowestArea.schoolAverage?.toFixed(1)} pontos (n=${lowestArea.schoolParticipants})` : 'sem dado'}`,
+    `Areas com amostra abaixo de 30: ${context.lowSampleAreas.length}`,
     '',
     'ACOES PRIORIZADAS',
     `1. Infraestrutura: priorizar ${context.criticalFactorName}`,
     '   - Validar o diagnostico com levantamento tecnico local.',
     '   - Definir responsavel, orcamento, prazo e indicador de sucesso.',
     '2. Desempenho: instituir ciclo bimestral de acompanhamento.',
-    '   - Identificar habilidades com maior oportunidade de avanco.',
+    '   - Cruzar os resultados por area com avaliacoes internas.',
     '   - Organizar monitorias e intervencoes de curta duracao.',
     '',
     'Relatorio gerado automaticamente pelo Atlas.',
-    'Dados sinteticos utilizados exclusivamente para demonstracao.',
+    'Fontes: Censo Escolar 2025, ENEM 2025 e contexto estadual SAEB 2023.',
+    'Validar as evidencias com a equipe escolar antes de decidir.',
   ];
 
   let y = 760;

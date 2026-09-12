@@ -31,18 +31,19 @@ type ActionDefinition = {
 
 export default function ActionPlanPage() {
   const { schoolContext: context } = useAtlas();
-  const storageKey = `atlas-action-plan:${context.school.name}`;
+  const storageKey = `atlas-action-plan:${context.school.code}`;
   const [completed, setCompleted] = useState<string[]>([]);
   const [downloaded, setDownloaded] = useState(false);
 
   const actions = useMemo<ActionDefinition[]>(() => {
-    const pedagogicalImpact = context.socioeconomicGap < -20 ? 'Impacto alto' : context.socioeconomicGap < 0 ? 'Impacto médio' : 'Impacto preventivo';
+    const pedagogicalImpact = context.lowSampleAreas.length ? 'Validar amostra' : 'Impacto preventivo';
+    const lowestArea = context.lowestPerformanceArea;
     return [
       {
         id: 'infrastructure',
         number: '01',
         title: 'Fortalecer a infraestrutura prioritária',
-        description: `Priorizar ${context.criticalFactorName}, hoje o menor indicador da escola, com ${context.school.infrastructure[context.criticalFactor].toFixed(1).replace('.', ',')}/10.`,
+        description: `Priorizar ${context.criticalFactorName}, hoje o menor índice composto da escola, com ${(context.school.infrastructure[context.criticalFactor] * 10).toFixed(1).replace('.', ',')}%.`,
         impact: 'Impacto alto',
         complexity: 'Complexidade média',
         icon: Building2,
@@ -56,12 +57,14 @@ export default function ActionPlanPage() {
         id: 'pedagogy',
         number: '02',
         title: 'Acompanhar o desempenho pedagógico',
-        description: 'Usar as evidências de desempenho para estruturar um ciclo de acompanhamento e apoio pedagógico focalizado.',
+        description: lowestArea
+          ? `Começar por ${lowestArea.label}, a menor média válida do ENEM (${lowestArea.schoolAverage?.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} pontos; n=${lowestArea.schoolParticipants}), sem confundir associação com causalidade.`
+          : 'Não há média válida por área nesta escola; primeiro valide a disponibilidade e a cobertura dos dados.',
         impact: pedagogicalImpact,
         complexity: 'Complexidade baixa',
         icon: UsersRound,
         steps: [
-          'Identificar habilidades com maior oportunidade de avanço.',
+          'Cruzar o sinal da área com avaliações internas e evidências pedagógicas locais.',
           'Organizar monitorias e intervenções de curta duração.',
           'Reavaliar os indicadores a cada bimestre.',
         ],

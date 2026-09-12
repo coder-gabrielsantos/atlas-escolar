@@ -34,23 +34,23 @@ export function WebMcpTools() {
         inputSchema: {
           type: 'object',
           properties: {
-            schoolName: { type: 'string', description: 'Nome exato de uma escola disponível no Atlas.' },
+            schoolCode: { type: 'string', description: 'Código oficial CO_ESCOLA da escola disponível no Atlas.' },
             profile: { type: 'string', enum: [...ACCESS_PROFILES] },
           },
-          required: ['schoolName'],
+          required: ['schoolCode'],
           additionalProperties: false,
         },
         annotations: { readOnlyHint: false, untrustedContentHint: false },
         execute(input: unknown) {
-          const value = input as { schoolName?: unknown; profile?: unknown };
-          if (typeof value.schoolName !== 'string') throw new Error('schoolName deve ser uma string.');
-          const school = SCHOOLS.find((item) => item.name === value.schoolName);
+          const value = input as { schoolCode?: unknown; profile?: unknown };
+          if (typeof value.schoolCode !== 'string') throw new Error('schoolCode deve ser uma string.');
+          const school = SCHOOLS.find((item) => item.code === value.schoolCode);
           if (!school) throw new Error('Escola não encontrada no conjunto de dados atual.');
           if (value.profile !== undefined && !ACCESS_PROFILES.includes(value.profile as AccessProfile)) {
             throw new Error('Perfil de acesso inválido.');
           }
-          selectSchoolContext(school.name, value.profile as AccessProfile | undefined);
-          return { schoolName: school.name, municipality: school.municipality, state: school.state };
+          selectSchoolContext(school.code, value.profile as AccessProfile | undefined);
+          return { schoolCode: school.code, schoolName: school.name, municipality: school.municipality, state: school.state };
         },
       },
       { signal: lifecycle.signal },

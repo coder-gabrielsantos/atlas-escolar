@@ -5,13 +5,14 @@ import {
   ACCESS_PROFILES,
   AccessProfile,
   buildSchoolContext,
+  DEFAULT_SCHOOL_CODE,
   SCHOOLS,
 } from '@/lib/atlas-data';
 
 type AtlasState = {
   state: string;
   municipality: string;
-  schoolName: string;
+  schoolCode: string;
   profile: AccessProfile;
   compareMunicipal: boolean;
 };
@@ -23,16 +24,16 @@ type AtlasContextValue = AtlasState & {
   schoolContext: ReturnType<typeof buildSchoolContext>;
   setStateValue: (value: string) => void;
   setMunicipality: (value: string) => void;
-  setSchoolName: (value: string) => void;
+  setSchoolCode: (value: string) => void;
   setProfile: (value: AccessProfile) => void;
   setCompareMunicipal: (value: boolean) => void;
-  selectSchoolContext: (schoolName: string, profile?: AccessProfile) => void;
+  selectSchoolContext: (schoolCode: string, profile?: AccessProfile) => void;
 };
 
 const DEFAULT_STATE: AtlasState = {
   state: 'MA',
   municipality: 'Coelho Neto',
-  schoolName: 'IEMA PLENO COELHO NETO',
+  schoolCode: DEFAULT_SCHOOL_CODE,
   profile: 'Gestor(a) Escolar',
   compareMunicipal: true,
 };
@@ -47,13 +48,15 @@ export function AtlasProvider({ children }: { children: React.ReactNode }) {
     if (!stored) return;
     try {
       const parsed = JSON.parse(stored) as Partial<AtlasState>;
-      const schoolExists = SCHOOLS.some((school) => school.name === parsed.schoolName);
+      const storedSchool = SCHOOLS.find((school) => school.code === parsed.schoolCode);
       const profileExists = ACCESS_PROFILES.includes(parsed.profile as AccessProfile);
       const timer = window.setTimeout(() => {
         setSettings({
           ...DEFAULT_STATE,
           ...parsed,
-          schoolName: schoolExists ? parsed.schoolName! : DEFAULT_STATE.schoolName,
+          state: storedSchool?.state ?? DEFAULT_STATE.state,
+          municipality: storedSchool?.municipality ?? DEFAULT_STATE.municipality,
+          schoolCode: storedSchool?.code ?? DEFAULT_STATE.schoolCode,
           profile: profileExists ? parsed.profile! : DEFAULT_STATE.profile,
         });
       }, 0);
@@ -79,38 +82,38 @@ export function AtlasProvider({ children }: { children: React.ReactNode }) {
     [settings.state, settings.municipality],
   );
   const schoolContext = useMemo(
-    () => buildSchoolContext(settings.schoolName, settings.compareMunicipal),
-    [settings.schoolName, settings.compareMunicipal],
+    () => buildSchoolContext(settings.schoolCode, settings.compareMunicipal),
+    [settings.schoolCode, settings.compareMunicipal],
   );
 
   const setStateValue = useCallback((state: string) => {
     const municipality = SCHOOLS.find((school) => school.state === state)?.municipality ?? '';
-    const schoolName = SCHOOLS.find(
+    const schoolCode = SCHOOLS.find(
       (school) => school.state === state && school.municipality === municipality,
-    )?.name ?? '';
-    setSettings((current) => ({ ...current, state, municipality, schoolName }));
+    )?.code ?? '';
+    setSettings((current) => ({ ...current, state, municipality, schoolCode }));
   }, []);
 
   const setMunicipality = useCallback((municipality: string) => {
     setSettings((current) => {
-      const schoolName = SCHOOLS.find(
+      const schoolCode = SCHOOLS.find(
         (school) => school.state === current.state && school.municipality === municipality,
-      )?.name ?? '';
-      return { ...current, municipality, schoolName };
+      )?.code ?? '';
+      return { ...current, municipality, schoolCode };
     });
   }, []);
 
-  const setSchoolName = useCallback((schoolName: string) => setSettings((current) => ({ ...current, schoolName })), []);
+  const setSchoolCode = useCallback((schoolCode: string) => setSettings((current) => ({ ...current, schoolCode })), []);
   const setProfile = useCallback((profile: AccessProfile) => setSettings((current) => ({ ...current, profile })), []);
   const setCompareMunicipal = useCallback((compareMunicipal: boolean) => setSettings((current) => ({ ...current, compareMunicipal })), []);
-  const selectSchoolContext = useCallback((schoolName: string, profile?: AccessProfile) => {
-    const school = SCHOOLS.find((item) => item.name === schoolName);
+  const selectSchoolContext = useCallback((schoolCode: string, profile?: AccessProfile) => {
+    const school = SCHOOLS.find((item) => item.code === schoolCode);
     if (!school) return;
     setSettings((current) => ({
       ...current,
       state: school.state,
       municipality: school.municipality,
-      schoolName: school.name,
+      schoolCode: school.code,
       profile: profile ?? current.profile,
     }));
   }, []);
@@ -123,7 +126,7 @@ export function AtlasProvider({ children }: { children: React.ReactNode }) {
     schoolContext,
     setStateValue,
     setMunicipality,
-    setSchoolName,
+    setSchoolCode,
     setProfile,
     setCompareMunicipal,
     selectSchoolContext,
