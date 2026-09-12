@@ -35,6 +35,8 @@ LLAMA_API_KEY=seu-segredo
 LLAMA_MODEL=identificador-do-modelo
 ```
 
+Também é aceita diretamente a URL-base da conta do Cloudflare Workers AI (`https://api.cloudflare.com/client/v4/accounts/{id}`); o Atlas acrescenta o caminho OpenAI-compatible automaticamente.
+
 Sem essas três variáveis, o produto continua operacional em modo local auditável, com respostas determinísticas baseadas nos mesmos dados. A chave nunca é enviada ao navegador.
 
 ## Executar localmente
