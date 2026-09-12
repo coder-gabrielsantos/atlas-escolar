@@ -255,8 +255,8 @@ export default function ActionPlanPage() {
                   Leve o diagnóstico para a reunião
                 </p>
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/52">
-                  Baixe um relatório em PDF com os indicadores atuais,
-                  prioridades e próximos passos desta escola.
+                  Baixe um PDF com indicadores, prioridades e próximos passos da
+                  escola.
                 </p>
               </div>
             </div>
