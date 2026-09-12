@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { ACCESS_PROFILES, AccessProfile, SCHOOLS } from '@/lib/atlas-data';
+import { SCHOOLS } from '@/lib/atlas-data';
 import { useAtlas } from '@/components/atlas-provider';
 
 type ModelContext = {
@@ -22,7 +22,9 @@ export function WebMcpTools() {
   const { selectSchoolContext } = useAtlas();
 
   useEffect(() => {
-    const modelContext = (document as Document & { modelContext?: ModelContext }).modelContext;
+    const modelContext = (
+      document as Document & { modelContext?: ModelContext }
+    ).modelContext;
     if (!modelContext?.registerTool) return;
     const lifecycle = new AbortController();
 
@@ -30,27 +32,36 @@ export function WebMcpTools() {
       {
         name: 'set_school_context',
         title: 'Selecionar contexto escolar',
-        description: 'Seleciona uma escola e, opcionalmente, um perfil de acesso no painel Atlas.',
+        description: 'Seleciona uma escola no painel Atlas.',
         inputSchema: {
           type: 'object',
           properties: {
-            schoolCode: { type: 'string', description: 'Código oficial CO_ESCOLA da escola disponível no Atlas.' },
-            profile: { type: 'string', enum: [...ACCESS_PROFILES] },
+            schoolCode: {
+              type: 'string',
+              description:
+                'Código oficial CO_ESCOLA da escola disponível no Atlas.',
+            },
           },
           required: ['schoolCode'],
           additionalProperties: false,
         },
         annotations: { readOnlyHint: false, untrustedContentHint: false },
         execute(input: unknown) {
-          const value = input as { schoolCode?: unknown; profile?: unknown };
-          if (typeof value.schoolCode !== 'string') throw new Error('schoolCode deve ser uma string.');
+          const value = input as { schoolCode?: unknown };
+          if (typeof value.schoolCode !== 'string')
+            throw new Error('schoolCode deve ser uma string.');
           const school = SCHOOLS.find((item) => item.code === value.schoolCode);
-          if (!school) throw new Error('Escola não encontrada no conjunto de dados atual.');
-          if (value.profile !== undefined && !ACCESS_PROFILES.includes(value.profile as AccessProfile)) {
-            throw new Error('Perfil de acesso inválido.');
-          }
-          selectSchoolContext(school.code, value.profile as AccessProfile | undefined);
-          return { schoolCode: school.code, schoolName: school.name, municipality: school.municipality, state: school.state };
+          if (!school)
+            throw new Error(
+              'Escola não encontrada no conjunto de dados atual.',
+            );
+          selectSchoolContext(school.code);
+          return {
+            schoolCode: school.code,
+            schoolName: school.name,
+            municipality: school.municipality,
+            state: school.state,
+          };
         },
       },
       { signal: lifecycle.signal },

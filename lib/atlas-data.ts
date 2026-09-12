@@ -247,155 +247,182 @@ export type Municipality = {
 };
 
 function average(values: number[]) {
-  return values.length ? values.reduce((total, value) => total + value, 0) / values.length : 0;
+  return values.length
+    ? values.reduce((total, value) => total + value, 0) / values.length
+    : 0;
 }
 
 function dependencyLabel(code: number): School['dependency'] {
   return code === 1 ? 'Federal' : code === 3 ? 'Municipal' : 'Estadual';
 }
 
-function municipalityInfrastructure(row: MunicipalityRow): Record<InfraKey, number> {
+function municipalityInfrastructure(
+  row: MunicipalityRow,
+): Record<InfraKey, number> {
   return {
-    basicServices: average([
-      row.PCT_ESCOLAS_AGUA_POTAVEL,
-      row.PCT_ESCOLAS_ENERGIA_REDE_PUBLICA,
-      row.PCT_ESCOLAS_ESGOTO_REDE_PUBLICA,
-      row.PCT_ESCOLAS_COLETA_LIXO,
-    ]) / 10,
-    learningSpaces: average([
-      row.PCT_ESCOLAS_BIBLIOTECA_LEITURA,
-      row.PCT_ESCOLAS_LAB_CIENCIAS,
-      row.PCT_ESCOLAS_LAB_INFORMATICA,
-      row.PCT_ESCOLAS_QUADRA,
-      row.PCT_ESCOLAS_REFEITORIO,
-    ]) / 10,
-    connectivity: average([
-      row.PCT_ESCOLAS_INTERNET,
-      row.PCT_ESCOLAS_INTERNET_ALUNOS,
-      row.PCT_ESCOLAS_INTERNET_APRENDIZAGEM,
-      row.PCT_ESCOLAS_BANDA_LARGA,
-    ]) / 10,
-    accessibility: average([
-      row.PCT_ESCOLAS_BANHEIRO_PNE,
-      row.PCT_ESCOLAS_SALA_ATENDIMENTO_ESPECIAL,
-      row.PCT_ESCOLAS_RAMPAS,
-      row.PCT_ESCOLAS_PISOS_TATEIS,
-      row.PCT_ESCOLAS_SINALIZACAO_ACESSIVEL,
-    ]) / 10,
+    basicServices:
+      average([
+        row.PCT_ESCOLAS_AGUA_POTAVEL,
+        row.PCT_ESCOLAS_ENERGIA_REDE_PUBLICA,
+        row.PCT_ESCOLAS_ESGOTO_REDE_PUBLICA,
+        row.PCT_ESCOLAS_COLETA_LIXO,
+      ]) / 10,
+    learningSpaces:
+      average([
+        row.PCT_ESCOLAS_BIBLIOTECA_LEITURA,
+        row.PCT_ESCOLAS_LAB_CIENCIAS,
+        row.PCT_ESCOLAS_LAB_INFORMATICA,
+        row.PCT_ESCOLAS_QUADRA,
+        row.PCT_ESCOLAS_REFEITORIO,
+      ]) / 10,
+    connectivity:
+      average([
+        row.PCT_ESCOLAS_INTERNET,
+        row.PCT_ESCOLAS_INTERNET_ALUNOS,
+        row.PCT_ESCOLAS_INTERNET_APRENDIZAGEM,
+        row.PCT_ESCOLAS_BANDA_LARGA,
+      ]) / 10,
+    accessibility:
+      average([
+        row.PCT_ESCOLAS_BANHEIRO_PNE,
+        row.PCT_ESCOLAS_SALA_ATENDIMENTO_ESPECIAL,
+        row.PCT_ESCOLAS_RAMPAS,
+        row.PCT_ESCOLAS_PISOS_TATEIS,
+        row.PCT_ESCOLAS_SINALIZACAO_ACESSIVEL,
+      ]) / 10,
     climate: row.PCT_SALAS_CLIMATIZADAS / 10,
   };
 }
 
-export const MUNICIPALITIES: Municipality[] = DATA.municipalities.map((row) => ({
-  code: row.CO_MUNICIPIO,
-  name: row.NO_MUNICIPIO,
-  schoolCount: row.QTD_ESCOLAS,
-  highSchoolCount: row.QTD_ESCOLAS_ENSINO_MEDIO,
-  enemRecords: row.QTD_REGISTROS_ENEM,
-  enemSchoolCount: row.QTD_ESCOLAS_ENEM_TOTAL,
-  linkedEnemSchoolCount: row.QTD_ESCOLAS_ENEM_IDENTIFICADAS_CENSO,
-  unlinkedEnemSchoolCount: row.QTD_ESCOLAS_ENEM_NAO_VINCULADAS_CENSO,
-  linkedCoveragePercentage: row.PCT_ESCOLAS_ENSINO_MEDIO_IDENTIFICADAS_NO_ENEM,
-  unlinkedPercentage: row.PCT_ESCOLAS_ENEM_NAO_VINCULADAS_CENSO,
-  participants: {
-    cn: row.QTD_PARTICIPANTES_CN,
-    ch: row.QTD_PARTICIPANTES_CH,
-    lc: row.QTD_PARTICIPANTES_LC,
-    mt: row.QTD_PARTICIPANTES_MT,
-    essay: row.QTD_PRESENTES_REDACAO,
-  },
-  averages: {
-    cn: row.MEDIA_CN,
-    ch: row.MEDIA_CH,
-    lc: row.MEDIA_LC,
-    mt: row.MEDIA_MT,
-    essay: row.MEDIA_REDACAO_GERAL,
-    validEssay: row.MEDIA_REDACAO_SEM_PROBLEMAS,
-  },
-  infrastructure: municipalityInfrastructure(row),
-}));
+export const MUNICIPALITIES: Municipality[] = DATA.municipalities.map(
+  (row) => ({
+    code: row.CO_MUNICIPIO,
+    name: row.NO_MUNICIPIO,
+    schoolCount: row.QTD_ESCOLAS,
+    highSchoolCount: row.QTD_ESCOLAS_ENSINO_MEDIO,
+    enemRecords: row.QTD_REGISTROS_ENEM,
+    enemSchoolCount: row.QTD_ESCOLAS_ENEM_TOTAL,
+    linkedEnemSchoolCount: row.QTD_ESCOLAS_ENEM_IDENTIFICADAS_CENSO,
+    unlinkedEnemSchoolCount: row.QTD_ESCOLAS_ENEM_NAO_VINCULADAS_CENSO,
+    linkedCoveragePercentage:
+      row.PCT_ESCOLAS_ENSINO_MEDIO_IDENTIFICADAS_NO_ENEM,
+    unlinkedPercentage: row.PCT_ESCOLAS_ENEM_NAO_VINCULADAS_CENSO,
+    participants: {
+      cn: row.QTD_PARTICIPANTES_CN,
+      ch: row.QTD_PARTICIPANTES_CH,
+      lc: row.QTD_PARTICIPANTES_LC,
+      mt: row.QTD_PARTICIPANTES_MT,
+      essay: row.QTD_PRESENTES_REDACAO,
+    },
+    averages: {
+      cn: row.MEDIA_CN,
+      ch: row.MEDIA_CH,
+      lc: row.MEDIA_LC,
+      mt: row.MEDIA_MT,
+      essay: row.MEDIA_REDACAO_GERAL,
+      validEssay: row.MEDIA_REDACAO_SEM_PROBLEMAS,
+    },
+    infrastructure: municipalityInfrastructure(row),
+  }),
+);
 
-const municipalityByCode = new Map(MUNICIPALITIES.map((municipality) => [municipality.code, municipality]));
+const municipalityByCode = new Map(
+  MUNICIPALITIES.map((municipality) => [municipality.code, municipality]),
+);
 
-export const SCHOOLS: School[] = DATA.schools.map<School>((row) => ({
-  code: row.CO_ESCOLA,
-  municipalityCode: row.CO_MUNICIPIO,
-  state: 'MA',
-  municipality: row.NO_MUNICIPIO,
-  name: row.NO_ESCOLA,
-  dependency: dependencyLabel(row.DEPENDENCIA),
-  location: row.LOCALIZACAO === 2 ? 'Rural' : 'Urbana',
-  year: 2025,
-  dataType: 'REAL',
-  source: row.FONTE_IDENTIFICACAO,
-  records: row.QTD_REGISTROS,
-  participants: {
-    cn: row.QTD_PARTICIPANTES_CN,
-    ch: row.QTD_PARTICIPANTES_CH,
-    lc: row.QTD_PARTICIPANTES_LC,
-    mt: row.QTD_PARTICIPANTES_MT,
-    essay: row.QTD_PRESENTES_REDACAO,
-  },
-  averages: {
-    cn: row.MEDIA_CN,
-    ch: row.MEDIA_CH,
-    lc: row.MEDIA_LC,
-    mt: row.MEDIA_MT,
-    essay: row.MEDIA_REDACAO_GERAL,
-    validEssay: row.MEDIA_REDACAO_SEM_PROBLEMAS,
-  },
-  validEssayCount: row.QTD_REDACOES_SEM_PROBLEMAS,
-  validEssayPercentage: row.PERCENTUAL_REDACOES_SEM_PROBLEMAS,
-  infrastructure: {
-    basicServices: row.PERCENTUAL_SERVICOS_BASICOS / 10,
-    learningSpaces: row.PERCENTUAL_ESPACOS_ESCOLARES / 10,
-    connectivity: row.PERCENTUAL_RECURSOS_CONECTIVIDADE / 10,
-    accessibility: row.PERCENTUAL_RECURSOS_ACESSIBILIDADE / 10,
-    climate: row.PERCENTUAL_SALAS_CLIMATIZADAS / 10,
-  },
-  resources: {
-    water: row.IN_AGUA_POTAVEL === 1,
-    publicEnergy: row.IN_ENERGIA_REDE_PUBLICA === 1,
-    publicSewage: row.IN_ESGOTO_REDE_PUBLICA === 1,
-    wasteCollection: row.IN_LIXO_SERVICO_COLETA === 1,
-    library: row.IN_BIBLIOTECA === 1,
-    readingRoom: row.IN_BIBLIOTECA_SALA_LEITURA === 1,
-    scienceLab: row.IN_LABORATORIO_CIENCIAS === 1,
-    computerLab: row.IN_LABORATORIO_INFORMATICA === 1,
-    sportsCourt: row.IN_QUADRA_ESPORTES === 1,
-    cafeteria: row.IN_REFEITORIO === 1,
-    internet: row.IN_INTERNET === 1,
-    studentInternet: row.IN_INTERNET_ALUNOS === 1,
-    learningInternet: row.IN_INTERNET_APRENDIZAGEM === 1,
-    broadband: row.IN_BANDA_LARGA === null ? null : row.IN_BANDA_LARGA === 1,
-    desktops: row.QT_DESKTOP_ALUNO,
-    laptops: row.QT_COMP_PORTATIL_ALUNO,
-    tablets: row.QT_TABLET_ALUNO,
-    totalDevices: row.TOTAL_DISPOSITIVOS_ALUNOS,
-    usedRooms: row.QT_SALAS_UTILIZADAS,
-    climateControlledRooms: row.QT_SALAS_UTILIZA_CLIMATIZADAS,
-    accessibleRooms: row.QT_SALAS_UTILIZADAS_ACESSIVEIS,
-    accessibleRoomPercentage: row.PERCENTUAL_SALAS_ACESSIVEIS,
-    noAccessibilityResource: row.IN_ACESSIBILIDADE_INEXISTENTE === 1,
-  },
-})).sort((left, right) => left.municipality.localeCompare(right.municipality, 'pt-BR') || left.name.localeCompare(right.name, 'pt-BR'));
-
-export const ACCESS_PROFILES = ['Estudante', 'Professor(a)', 'Gestor(a) Escolar'] as const;
-export type AccessProfile = (typeof ACCESS_PROFILES)[number];
+export const SCHOOLS: School[] = DATA.schools
+  .map<School>((row) => ({
+    code: row.CO_ESCOLA,
+    municipalityCode: row.CO_MUNICIPIO,
+    state: 'MA',
+    municipality: row.NO_MUNICIPIO,
+    name: row.NO_ESCOLA,
+    dependency: dependencyLabel(row.DEPENDENCIA),
+    location: row.LOCALIZACAO === 2 ? 'Rural' : 'Urbana',
+    year: 2025,
+    dataType: 'REAL',
+    source: row.FONTE_IDENTIFICACAO,
+    records: row.QTD_REGISTROS,
+    participants: {
+      cn: row.QTD_PARTICIPANTES_CN,
+      ch: row.QTD_PARTICIPANTES_CH,
+      lc: row.QTD_PARTICIPANTES_LC,
+      mt: row.QTD_PARTICIPANTES_MT,
+      essay: row.QTD_PRESENTES_REDACAO,
+    },
+    averages: {
+      cn: row.MEDIA_CN,
+      ch: row.MEDIA_CH,
+      lc: row.MEDIA_LC,
+      mt: row.MEDIA_MT,
+      essay: row.MEDIA_REDACAO_GERAL,
+      validEssay: row.MEDIA_REDACAO_SEM_PROBLEMAS,
+    },
+    validEssayCount: row.QTD_REDACOES_SEM_PROBLEMAS,
+    validEssayPercentage: row.PERCENTUAL_REDACOES_SEM_PROBLEMAS,
+    infrastructure: {
+      basicServices: row.PERCENTUAL_SERVICOS_BASICOS / 10,
+      learningSpaces: row.PERCENTUAL_ESPACOS_ESCOLARES / 10,
+      connectivity: row.PERCENTUAL_RECURSOS_CONECTIVIDADE / 10,
+      accessibility: row.PERCENTUAL_RECURSOS_ACESSIBILIDADE / 10,
+      climate: row.PERCENTUAL_SALAS_CLIMATIZADAS / 10,
+    },
+    resources: {
+      water: row.IN_AGUA_POTAVEL === 1,
+      publicEnergy: row.IN_ENERGIA_REDE_PUBLICA === 1,
+      publicSewage: row.IN_ESGOTO_REDE_PUBLICA === 1,
+      wasteCollection: row.IN_LIXO_SERVICO_COLETA === 1,
+      library: row.IN_BIBLIOTECA === 1,
+      readingRoom: row.IN_BIBLIOTECA_SALA_LEITURA === 1,
+      scienceLab: row.IN_LABORATORIO_CIENCIAS === 1,
+      computerLab: row.IN_LABORATORIO_INFORMATICA === 1,
+      sportsCourt: row.IN_QUADRA_ESPORTES === 1,
+      cafeteria: row.IN_REFEITORIO === 1,
+      internet: row.IN_INTERNET === 1,
+      studentInternet: row.IN_INTERNET_ALUNOS === 1,
+      learningInternet: row.IN_INTERNET_APRENDIZAGEM === 1,
+      broadband: row.IN_BANDA_LARGA === null ? null : row.IN_BANDA_LARGA === 1,
+      desktops: row.QT_DESKTOP_ALUNO,
+      laptops: row.QT_COMP_PORTATIL_ALUNO,
+      tablets: row.QT_TABLET_ALUNO,
+      totalDevices: row.TOTAL_DISPOSITIVOS_ALUNOS,
+      usedRooms: row.QT_SALAS_UTILIZADAS,
+      climateControlledRooms: row.QT_SALAS_UTILIZA_CLIMATIZADAS,
+      accessibleRooms: row.QT_SALAS_UTILIZADAS_ACESSIVEIS,
+      accessibleRoomPercentage: row.PERCENTUAL_SALAS_ACESSIVEIS,
+      noAccessibilityResource: row.IN_ACESSIBILIDADE_INEXISTENTE === 1,
+    },
+  }))
+  .sort(
+    (left, right) =>
+      left.municipality.localeCompare(right.municipality, 'pt-BR') ||
+      left.name.localeCompare(right.name, 'pt-BR'),
+  );
 
 export const DATA_MANIFEST = DATA.manifest;
 export const SAEB_CONTEXT = DATA.saeb;
 export const SAEB_STATE = DATA.saeb.filter((row) => row.DIMENSAO === 'Estado');
-export const DEFAULT_SCHOOL_CODE = SCHOOLS.find((school) => school.code === '21288780')?.code ?? SCHOOLS[0].code;
+export const DEFAULT_SCHOOL_CODE =
+  SCHOOLS.find((school) => school.code === '21288780')?.code ?? SCHOOLS[0].code;
 
 export type SchoolContext = ReturnType<typeof buildSchoolContext>;
 
-export function buildSchoolContext(schoolCode: string, compareMunicipal: boolean) {
+export function buildSchoolContext(
+  schoolCode: string,
+  compareMunicipal: boolean,
+) {
   const school = SCHOOLS.find((item) => item.code === schoolCode) ?? SCHOOLS[0];
-  const municipality = municipalityByCode.get(school.municipalityCode) ?? MUNICIPALITIES[0];
-  const municipalitySchools = SCHOOLS.filter((item) => item.municipalityCode === school.municipalityCode);
-  const infrastructureScore = average(INFRA_KEYS.map((key) => school.infrastructure[key]));
-  const municipalScore = average(INFRA_KEYS.map((key) => municipality.infrastructure[key]));
+  const municipality =
+    municipalityByCode.get(school.municipalityCode) ?? MUNICIPALITIES[0];
+  const municipalitySchools = SCHOOLS.filter(
+    (item) => item.municipalityCode === school.municipalityCode,
+  );
+  const infrastructureScore = average(
+    INFRA_KEYS.map((key) => school.infrastructure[key]),
+  );
+  const municipalScore = average(
+    INFRA_KEYS.map((key) => municipality.infrastructure[key]),
+  );
   const criticalFactor = INFRA_KEYS.reduce((lowest, key) =>
     school.infrastructure[key] < school.infrastructure[lowest] ? key : lowest,
   );
@@ -407,12 +434,22 @@ export function buildSchoolContext(schoolCode: string, compareMunicipal: boolean
     schoolParticipants: school.participants[key],
     municipalParticipants: municipality.participants[key],
   }));
-  const validPerformanceAreas = performanceAreas.filter((area) => area.schoolAverage !== null);
-  const lowestPerformanceArea = validPerformanceAreas.reduce<(typeof validPerformanceAreas)[number] | null>(
-    (lowest, area) => !lowest || (area.schoolAverage ?? Infinity) < (lowest.schoolAverage ?? Infinity) ? area : lowest,
+  const validPerformanceAreas = performanceAreas.filter(
+    (area) => area.schoolAverage !== null,
+  );
+  const lowestPerformanceArea = validPerformanceAreas.reduce<
+    (typeof validPerformanceAreas)[number] | null
+  >(
+    (lowest, area) =>
+      !lowest ||
+      (area.schoolAverage ?? Infinity) < (lowest.schoolAverage ?? Infinity)
+        ? area
+        : lowest,
     null,
   );
-  const lowSampleAreas = performanceAreas.filter((area) => area.schoolParticipants < 30);
+  const lowSampleAreas = performanceAreas.filter(
+    (area) => area.schoolParticipants < 30,
+  );
 
   return {
     school,
@@ -422,9 +459,12 @@ export function buildSchoolContext(schoolCode: string, compareMunicipal: boolean
     infrastructureScore,
     municipalScore,
     connectivityScore: school.infrastructure.connectivity,
-    connectivityStatus: school.infrastructure.connectivity >= 7.5 ? ('Favorável' as const)
-      : school.infrastructure.connectivity >= 5 ? ('Parcial' as const)
-        : ('Crítica' as const),
+    connectivityStatus:
+      school.infrastructure.connectivity >= 7.5
+        ? ('Favorável' as const)
+        : school.infrastructure.connectivity >= 5
+          ? ('Parcial' as const)
+          : ('Crítica' as const),
     criticalFactor,
     criticalFactorName: INFRA_LABELS[criticalFactor],
     performanceAreas,
