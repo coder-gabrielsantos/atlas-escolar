@@ -1,0 +1,6 @@
+# Force LF line endings for all data files to ensure consistent SHA-256 hashes
+# across platforms (Windows, Linux, macOS, CI/CD environments like Vercel).
+data/** text eol=lf
+*.csv text eol=lf
+*.json text eol=lf
+*.mjs text eol=lf
