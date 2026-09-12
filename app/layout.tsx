@@ -14,10 +14,9 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ??
       'https://atlas-inteligencia-educacional.maxcrowleyadz.chatgpt.site',
   ),
-  title: 'Atlas — Inteligência educacional',
+  title: 'Atlas',
   description:
     'Diagnóstico escolar orientado por evidências para decisões mais justas.',
-  icons: { icon: '/favicon.svg' },
   openGraph: {
     title: 'Atlas — Inteligência educacional',
     description:

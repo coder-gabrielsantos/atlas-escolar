@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
   Bot,
-  ChartNoAxesCombined,
   CircleGauge,
   ClipboardCheck,
   Menu,
@@ -117,12 +116,9 @@ function Brand() {
   return (
     <Link
       href="/"
-      className="flex items-center gap-3"
+      className="block"
       aria-label="Atlas — página inicial"
     >
-      <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-[var(--lime)] text-[var(--navy)] shadow-[0_9px_24px_rgb(200_236_81/10%)]">
-        <ChartNoAxesCombined size={21} strokeWidth={2.4} />
-      </div>
       <div>
         <p className="text-[17px] font-semibold tracking-[-0.02em] text-white">
           Atlas
@@ -142,7 +138,7 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
     <main className="min-h-screen bg-[var(--canvas)] text-[var(--ink)]">
       <WebMcpTools />
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[272px] flex-col overflow-y-auto bg-[var(--navy)] px-5 py-6 text-white lg:flex">
-        <div className="px-2">
+        <div className="-mx-5 -mt-6 flex h-[70px] shrink-0 items-center border-b border-white/10 px-7">
           <Brand />
         </div>
         <nav className="mt-10 space-y-1" aria-label="Navegação principal">

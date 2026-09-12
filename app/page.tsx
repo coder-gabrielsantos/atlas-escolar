@@ -94,7 +94,7 @@ export default function OverviewPage() {
               <p className="text-sm text-white/50">Menor índice composto</p>
               <p className="text-[40px] font-semibold leading-none">
                 {criticalPercentage.toFixed(0)}
-                <span className="text-base">%</span>
+                <span className="ml-2 text-base">%</span>
               </p>
             </div>
           </article>
@@ -125,7 +125,7 @@ export default function OverviewPage() {
             </div>
             <p className="mt-7 text-[40px] font-semibold leading-none tracking-[-0.055em]">
               {formatScore(math.schoolAverage)}
-              <span className="ml-1 text-sm font-normal text-[var(--muted)]">
+              <span className="ml-3 inline-block text-sm font-normal tracking-normal text-[var(--muted)]">
                 pts
               </span>
             </p>
@@ -144,7 +144,7 @@ export default function OverviewPage() {
             </div>
             <p className="mt-7 text-[40px] font-semibold leading-none tracking-[-0.055em]">
               {(context.connectivityScore * 10).toFixed(0)}
-              <span className="text-base">%</span>
+              <span className="ml-2 text-base">%</span>
             </p>
             <p className="mt-5 text-xs text-[var(--muted)]">
               Índice composto · situação{' '}
