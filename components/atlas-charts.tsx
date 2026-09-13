@@ -1,7 +1,12 @@
 'use client';
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
 import {
   ENEM_AREA_SHORT_LABELS,
   INFRA_KEYS,
@@ -19,18 +24,60 @@ export function InfrastructureChart({ context }: { context: SchoolContext }) {
   const data = INFRA_KEYS.map((key) => ({
     label: INFRA_SHORT_LABELS[key],
     school: Number((context.school.infrastructure[key] * 10).toFixed(2)),
-    municipality: Number((context.municipalInfrastructure[key] * 10).toFixed(2)),
+    municipality: Number(
+      (context.municipalInfrastructure[key] * 10).toFixed(2),
+    ),
   }));
 
   return (
-    <ChartContainer config={infrastructureConfig} className="h-[310px] w-full" initialDimension={{ width: 660, height: 310 }}>
-      <BarChart data={data} margin={{ top: 22, right: 6, left: -14, bottom: 16 }} barGap={3}>
+    <ChartContainer
+      config={infrastructureConfig}
+      className="h-[270px] w-full sm:h-[310px]"
+      initialDimension={{ width: 660, height: 310 }}
+    >
+      <BarChart
+        accessibilityLayer
+        data={data}
+        margin={{ top: 18, right: 0, left: -20, bottom: 10 }}
+        barGap={2}
+      >
         <CartesianGrid vertical={false} stroke="#ecece7" />
-        <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} tick={{ fontSize: 12, fill: '#66737a' }} dy={10} />
-        <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickFormatter={(value) => `${value}%`} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#7d878c' }} />
-        <ChartTooltip cursor={{ fill: '#f4f5f1' }} content={<ChartTooltipContent indicator="dot" />} />
-        <Bar dataKey="school" name="school" fill="var(--color-school)" radius={[6, 6, 2, 2]} maxBarSize={28} />
-        {context.compareMunicipal && <Bar dataKey="municipality" name="municipality" fill="var(--color-municipality)" radius={[6, 6, 2, 2]} maxBarSize={28} />}
+        <XAxis
+          dataKey="label"
+          tickLine={false}
+          axisLine={false}
+          interval={0}
+          tick={{ fontSize: 11, fill: '#627178' }}
+          dy={9}
+        />
+        <YAxis
+          domain={[0, 100]}
+          ticks={[0, 25, 50, 75, 100]}
+          tickFormatter={(value) => `${value}%`}
+          tickLine={false}
+          axisLine={false}
+          tick={{ fontSize: 11, fill: '#7d878c' }}
+        />
+        <ChartTooltip
+          cursor={{ fill: '#f2f5f1' }}
+          content={<ChartTooltipContent indicator="dot" />}
+        />
+        <Bar
+          dataKey="school"
+          name="school"
+          fill="var(--color-school)"
+          radius={[6, 6, 2, 2]}
+          maxBarSize={28}
+        />
+        {context.compareMunicipal && (
+          <Bar
+            dataKey="municipality"
+            name="municipality"
+            fill="var(--color-municipality)"
+            radius={[6, 6, 2, 2]}
+            maxBarSize={28}
+          />
+        )}
       </BarChart>
     </ChartContainer>
   );
@@ -44,19 +91,61 @@ const performanceConfig = {
 export function EnemPerformanceChart({ context }: { context: SchoolContext }) {
   const data = context.performanceAreas.map((area) => ({
     label: ENEM_AREA_SHORT_LABELS[area.key],
-    school: area.schoolAverage === null ? undefined : Number(area.schoolAverage.toFixed(2)),
+    school:
+      area.schoolAverage === null
+        ? undefined
+        : Number(area.schoolAverage.toFixed(2)),
     municipality: Number(area.municipalAverage.toFixed(2)),
   }));
 
   return (
-    <ChartContainer config={performanceConfig} className="h-[310px] w-full" initialDimension={{ width: 660, height: 310 }}>
-      <BarChart data={data} margin={{ top: 22, right: 6, left: -12, bottom: 16 }} barGap={3}>
+    <ChartContainer
+      config={performanceConfig}
+      className="h-[270px] w-full sm:h-[310px]"
+      initialDimension={{ width: 660, height: 310 }}
+    >
+      <BarChart
+        accessibilityLayer
+        data={data}
+        margin={{ top: 18, right: 0, left: -19, bottom: 10 }}
+        barGap={2}
+      >
         <CartesianGrid vertical={false} stroke="#ecece7" />
-        <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} tick={{ fontSize: 12, fill: '#66737a' }} dy={10} />
-        <YAxis domain={[0, 1000]} ticks={[0, 250, 500, 750, 1000]} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#7d878c' }} />
-        <ChartTooltip cursor={{ fill: '#f4f5f1' }} content={<ChartTooltipContent indicator="dot" />} />
-        <Bar dataKey="school" name="school" fill="var(--color-school)" radius={[6, 6, 2, 2]} maxBarSize={28} />
-        {context.compareMunicipal && <Bar dataKey="municipality" name="municipality" fill="var(--color-municipality)" radius={[6, 6, 2, 2]} maxBarSize={28} />}
+        <XAxis
+          dataKey="label"
+          tickLine={false}
+          axisLine={false}
+          interval={0}
+          tick={{ fontSize: 11, fill: '#627178' }}
+          dy={9}
+        />
+        <YAxis
+          domain={[0, 1000]}
+          ticks={[0, 250, 500, 750, 1000]}
+          tickLine={false}
+          axisLine={false}
+          tick={{ fontSize: 11, fill: '#7d878c' }}
+        />
+        <ChartTooltip
+          cursor={{ fill: '#f2f5f1' }}
+          content={<ChartTooltipContent indicator="dot" />}
+        />
+        <Bar
+          dataKey="school"
+          name="school"
+          fill="var(--color-school)"
+          radius={[6, 6, 2, 2]}
+          maxBarSize={28}
+        />
+        {context.compareMunicipal && (
+          <Bar
+            dataKey="municipality"
+            name="municipality"
+            fill="var(--color-municipality)"
+            radius={[6, 6, 2, 2]}
+            maxBarSize={28}
+          />
+        )}
       </BarChart>
     </ChartContainer>
   );
@@ -69,20 +158,61 @@ const saebConfig = {
 
 export function SaebStateChart() {
   const data = SAEB_STATE.map((row) => ({
-    label: row.ETAPA.startsWith('5º') ? '5º ano EF' : row.ETAPA.startsWith('9º') ? '9º ano EF' : 'Ensino Médio',
+    label: row.ETAPA.startsWith('5º')
+      ? '5º ano'
+      : row.ETAPA.startsWith('9º')
+        ? '9º ano'
+        : 'Ens. médio',
     portuguese: row.MEDIA_LP_PONDERADA_PRESENTES ?? undefined,
     mathematics: row.MEDIA_MT_PONDERADA_PRESENTES ?? undefined,
   }));
 
   return (
-    <ChartContainer config={saebConfig} className="h-[300px] w-full" initialDimension={{ width: 720, height: 300 }}>
-      <BarChart data={data} margin={{ top: 22, right: 8, left: -12, bottom: 16 }} barGap={3}>
+    <ChartContainer
+      config={saebConfig}
+      className="h-[270px] w-full sm:h-[300px]"
+      initialDimension={{ width: 720, height: 300 }}
+    >
+      <BarChart
+        accessibilityLayer
+        data={data}
+        margin={{ top: 18, right: 0, left: -19, bottom: 10 }}
+        barGap={2}
+      >
         <CartesianGrid vertical={false} stroke="#ecece7" />
-        <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} tick={{ fontSize: 12, fill: '#66737a' }} dy={10} />
-        <YAxis domain={[0, 400]} ticks={[0, 100, 200, 300, 400]} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#7d878c' }} />
-        <ChartTooltip cursor={{ fill: '#f4f5f1' }} content={<ChartTooltipContent indicator="dot" />} />
-        <Bar dataKey="portuguese" name="portuguese" fill="var(--color-portuguese)" radius={[6, 6, 2, 2]} maxBarSize={34} />
-        <Bar dataKey="mathematics" name="mathematics" fill="var(--color-mathematics)" radius={[6, 6, 2, 2]} maxBarSize={34} />
+        <XAxis
+          dataKey="label"
+          tickLine={false}
+          axisLine={false}
+          interval={0}
+          tick={{ fontSize: 11, fill: '#627178' }}
+          dy={9}
+        />
+        <YAxis
+          domain={[0, 400]}
+          ticks={[0, 100, 200, 300, 400]}
+          tickLine={false}
+          axisLine={false}
+          tick={{ fontSize: 11, fill: '#7d878c' }}
+        />
+        <ChartTooltip
+          cursor={{ fill: '#f2f5f1' }}
+          content={<ChartTooltipContent indicator="dot" />}
+        />
+        <Bar
+          dataKey="portuguese"
+          name="portuguese"
+          fill="var(--color-portuguese)"
+          radius={[6, 6, 2, 2]}
+          maxBarSize={34}
+        />
+        <Bar
+          dataKey="mathematics"
+          name="mathematics"
+          fill="var(--color-mathematics)"
+          radius={[6, 6, 2, 2]}
+          maxBarSize={34}
+        />
       </BarChart>
     </ChartContainer>
   );

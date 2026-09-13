@@ -103,7 +103,7 @@ function Filters({ onDone }: { onDone?: () => void }) {
       {onDone && (
         <Button
           onClick={onDone}
-          className="w-full bg-[var(--lime)] text-[var(--navy)] hover:bg-[var(--lime)]/90"
+          className="h-11 w-full bg-[var(--lime)] text-[var(--navy)] hover:bg-[var(--lime)]/90"
         >
           Aplicar contexto
         </Button>
@@ -114,11 +114,7 @@ function Filters({ onDone }: { onDone?: () => void }) {
 
 function Brand() {
   return (
-    <Link
-      href="/"
-      className="block"
-      aria-label="Atlas — página inicial"
-    >
+    <Link href="/" className="block" aria-label="Atlas — página inicial">
       <div>
         <p className="text-[17px] font-semibold tracking-[-0.02em] text-white">
           Atlas
@@ -135,7 +131,7 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   return (
-    <main className="min-h-screen bg-[var(--canvas)] text-[var(--ink)]">
+    <main className="min-h-[100dvh] bg-[var(--canvas)] text-[var(--ink)]">
       <WebMcpTools />
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[272px] flex-col overflow-y-auto bg-[var(--navy)] px-5 py-6 text-white lg:flex">
         <div className="-mx-5 -mt-6 flex h-[70px] shrink-0 items-center border-b border-white/10 px-7">
@@ -149,7 +145,7 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
                 key={href}
                 href={href}
                 aria-current={active ? 'page' : undefined}
-                className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition ${
+                className={`flex min-h-11 items-center gap-3 rounded-xl px-3 py-3 text-sm transition ${
                   active
                     ? 'bg-white/10 font-medium text-white'
                     : 'text-white/52 hover:bg-white/5 hover:text-white'
@@ -180,18 +176,18 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
             aria-label="Fechar filtros"
             onClick={() => setFiltersOpen(false)}
           />
-          <aside className="soft-scroll absolute inset-y-0 right-0 w-[min(88vw,380px)] overflow-y-auto bg-[var(--navy)] p-6 text-white shadow-2xl">
+          <aside className="soft-scroll absolute inset-y-0 right-0 w-[min(88vw,380px)] overflow-y-auto bg-[var(--navy)] p-5 pb-[calc(20px+env(safe-area-inset-bottom))] text-white shadow-2xl sm:p-6">
             <div className="flex items-center justify-between">
               <Brand />
               <button
-                className="grid size-10 place-items-center rounded-xl bg-white/8"
+                className="grid size-11 place-items-center rounded-xl bg-white/8"
                 onClick={() => setFiltersOpen(false)}
                 aria-label="Fechar"
               >
                 <X size={19} />
               </button>
             </div>
-            <div className="mb-5 mt-10 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/35">
+            <div className="mb-5 mt-9 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/35 sm:mt-10">
               <SlidersHorizontal size={13} /> Contexto da análise
             </div>
             <Filters onDone={() => setFiltersOpen(false)} />
@@ -199,17 +195,18 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <div className="pb-20 lg:pl-[272px] lg:pb-0">
-        <header className="sticky top-0 z-20 flex h-[70px] items-center justify-between border-b border-[var(--line)] bg-[color:rgba(247,247,243,.88)] px-5 backdrop-blur-xl sm:px-8 lg:px-10">
-          <div className="flex items-center gap-3 lg:hidden">
+      <div className="pb-[calc(84px+env(safe-area-inset-bottom))] lg:pl-[272px] lg:pb-0">
+        <header className="sticky top-0 z-20 flex h-[70px] items-center justify-between border-b border-[var(--line)] bg-[color:rgba(242,245,241,.9)] px-4 backdrop-blur-xl sm:px-8 lg:px-10">
+          <div className="flex min-w-0 items-center gap-3 lg:hidden">
             <button
               onClick={() => setFiltersOpen(true)}
-              className="grid size-10 place-items-center rounded-xl bg-[var(--navy)] text-[var(--lime)]"
+              className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--navy)] text-[var(--lime)]"
               aria-label="Abrir filtros"
+              aria-expanded={filtersOpen}
             >
               <Menu size={19} />
             </button>
-            <span className="text-sm font-semibold">
+            <span className="truncate text-sm font-semibold">
               {PAGE_NAMES[pathname] ?? 'Atlas'}
             </span>
           </div>
@@ -220,18 +217,18 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
               {PAGE_NAMES[pathname] ?? 'Atlas'}
             </span>
           </p>
-          <p className="max-w-[240px] truncate text-xs text-[var(--muted)] sm:max-w-[360px]">
+          <p className="ml-3 max-w-[44vw] truncate text-xs text-[var(--muted)] sm:max-w-[360px]">
             {schoolContext.school.name}
           </p>
         </header>
-        {children}
+        <div id="atlas-content">{children}</div>
         <footer className="border-t border-[var(--line)] px-5 py-5 text-center text-xs text-[var(--muted)] sm:px-8 lg:px-10">
           Censo/ENEM {schoolContext.school.year} · SAEB 2023
         </footer>
       </div>
 
       <nav
-        className="fixed inset-x-3 bottom-3 z-30 flex h-[64px] items-center justify-around rounded-2xl border border-white/10 bg-[var(--navy)] px-2 shadow-[0_18px_60px_rgb(23_43_53/28%)] lg:hidden"
+        className="fixed inset-x-3 bottom-[calc(12px+env(safe-area-inset-bottom))] z-30 flex h-[64px] items-center justify-around rounded-2xl border border-white/10 bg-[var(--navy)] px-2 shadow-[0_18px_60px_rgb(23_43_53/28%)] lg:hidden"
         aria-label="Navegação principal móvel"
       >
         {NAVIGATION.map(({ href, short, icon: Icon }) => {
@@ -240,10 +237,11 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
             <Link
               key={href}
               href={href}
-              className={`flex min-w-20 flex-col items-center gap-1 text-[10px] ${active ? 'text-[var(--lime)]' : 'text-white/48'}`}
+              aria-current={active ? 'page' : undefined}
+              className={`flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-1 text-[10px] ${active ? 'text-[var(--lime)]' : 'text-white/48'}`}
             >
               <Icon size={19} />
-              {short}
+              <span className="truncate">{short}</span>
             </Link>
           );
         })}
