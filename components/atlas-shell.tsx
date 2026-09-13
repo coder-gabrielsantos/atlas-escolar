@@ -129,6 +129,16 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { schoolContext } = useAtlas();
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersClosing, setFiltersClosing] = useState(false);
+
+  const openFilters = () => {
+    setFiltersClosing(false);
+    setFiltersOpen(true);
+  };
+
+  const closeFilters = () => {
+    setFiltersClosing(true);
+  };
 
   return (
     <main className="min-h-[100dvh] bg-[var(--canvas)] text-[var(--ink)]">
@@ -172,16 +182,26 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
       {filtersOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
-            className="absolute inset-0 bg-[var(--navy)]/45 backdrop-blur-sm"
+            data-closing={filtersClosing || undefined}
+            className="atlas-mobile-menu-overlay absolute inset-0 bg-[var(--navy)]/45 backdrop-blur-sm"
             aria-label="Fechar filtros"
-            onClick={() => setFiltersOpen(false)}
+            onClick={closeFilters}
           />
-          <aside className="soft-scroll absolute inset-y-0 right-0 w-[min(88vw,380px)] overflow-y-auto bg-[var(--navy)] p-5 pb-[calc(20px+env(safe-area-inset-bottom))] text-white shadow-2xl sm:p-6">
+          <aside
+            data-closing={filtersClosing || undefined}
+            onAnimationEnd={(event) => {
+              if (filtersClosing && event.currentTarget === event.target) {
+                setFiltersOpen(false);
+                setFiltersClosing(false);
+              }
+            }}
+            className="atlas-mobile-menu-panel soft-scroll absolute inset-y-0 left-0 w-[min(88vw,380px)] overflow-y-auto bg-[var(--navy)] p-5 pb-[calc(20px+env(safe-area-inset-bottom))] text-white shadow-2xl sm:p-6"
+          >
             <div className="flex items-center justify-between">
               <Brand />
               <button
                 className="grid size-11 place-items-center rounded-xl bg-white/8"
-                onClick={() => setFiltersOpen(false)}
+                onClick={closeFilters}
                 aria-label="Fechar"
               >
                 <X size={19} />
@@ -190,7 +210,7 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
             <div className="mb-5 mt-9 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/35 sm:mt-10">
               <SlidersHorizontal size={13} /> Contexto da análise
             </div>
-            <Filters onDone={() => setFiltersOpen(false)} />
+            <Filters onDone={closeFilters} />
           </aside>
         </div>
       )}
@@ -199,7 +219,7 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-20 flex h-[70px] items-center justify-between border-b border-[var(--line)] bg-[color:rgba(242,245,241,.9)] px-4 backdrop-blur-xl sm:px-8 lg:px-10">
           <div className="flex min-w-0 items-center gap-3 lg:hidden">
             <button
-              onClick={() => setFiltersOpen(true)}
+              onClick={openFilters}
               className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--navy)] text-[var(--lime)]"
               aria-label="Abrir filtros"
               aria-expanded={filtersOpen}
