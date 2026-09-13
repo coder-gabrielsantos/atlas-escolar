@@ -16,19 +16,7 @@ import {
   InfrastructureChart,
   SaebStateChart,
 } from '@/components/atlas-charts';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import {
-  DATA_MANIFEST,
-  DOCUMENT_SOURCES,
-  INFRA_KEYS,
-  INFRA_LABELS,
-  SAEB_STATE,
-} from '@/lib/atlas-data';
+import { INFRA_KEYS, INFRA_LABELS, SAEB_STATE } from '@/lib/atlas-data';
 
 function greeting() {
   const hour = new Date().getHours();
@@ -106,12 +94,12 @@ export default function OverviewPage() {
               <p className="text-sm text-white/50">Menor índice composto</p>
               <p className="text-[40px] font-semibold leading-none">
                 {criticalPercentage.toFixed(0)}
-                <span className="text-base">%</span>
+                <span className="ml-2 text-base">%</span>
               </p>
             </div>
           </article>
 
-          <article className="atlas-card p-6">
+          <article className="atlas-card flex flex-col justify-center p-6">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--muted)]">
                 Registros ENEM
@@ -128,7 +116,7 @@ export default function OverviewPage() {
             </p>
           </article>
 
-          <article className="atlas-card p-6">
+          <article className="atlas-card flex flex-col justify-center p-6">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--muted)]">
                 Matemática
@@ -137,7 +125,7 @@ export default function OverviewPage() {
             </div>
             <p className="mt-7 text-[40px] font-semibold leading-none tracking-[-0.055em]">
               {formatScore(math.schoolAverage)}
-              <span className="ml-1 text-sm font-normal text-[var(--muted)]">
+              <span className="ml-3 inline-block text-sm font-normal tracking-normal text-[var(--muted)]">
                 pts
               </span>
             </p>
@@ -147,7 +135,7 @@ export default function OverviewPage() {
             </p>
           </article>
 
-          <article className="atlas-card p-6">
+          <article className="atlas-card flex flex-col justify-center p-6">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--muted)]">
                 Conectividade
@@ -156,7 +144,7 @@ export default function OverviewPage() {
             </div>
             <p className="mt-7 text-[40px] font-semibold leading-none tracking-[-0.055em]">
               {(context.connectivityScore * 10).toFixed(0)}
-              <span className="text-base">%</span>
+              <span className="ml-2 text-base">%</span>
             </p>
             <p className="mt-5 text-xs text-[var(--muted)]">
               Índice composto · situação{' '}
@@ -205,8 +193,8 @@ export default function OverviewPage() {
           </article>
         </section>
 
-        <section className="mt-10 grid gap-5 xl:grid-cols-[1.05fr_.95fr]">
-          <article className="atlas-card p-6 sm:p-7">
+        <section className="mt-10 grid gap-5 xl:grid-cols-2">
+          <article className="atlas-card p-5 sm:p-7">
             <p className="atlas-eyebrow">Diagnóstico detalhado</p>
             <h2 className="atlas-section-title">
               Composição da infraestrutura
@@ -248,7 +236,7 @@ export default function OverviewPage() {
             </div>
           </article>
 
-          <article className="atlas-card p-6 sm:p-7">
+          <article className="atlas-card p-5 sm:p-7">
             <p className="atlas-eyebrow">SAEB 2023</p>
             <h2 className="atlas-section-title">Contexto do Maranhão</h2>
             <p className="atlas-section-copy">
@@ -271,49 +259,6 @@ export default function OverviewPage() {
               </p>
             )}
           </article>
-        </section>
-
-        <section className="mt-10">
-          <Accordion className="atlas-card px-5 sm:px-7">
-            <AccordionItem value="methodology">
-              <AccordionTrigger className="py-5 text-left">
-                <div>
-                  <p className="font-semibold">Metodologia e rastreabilidade</p>
-                  <p className="mt-1 text-xs font-normal text-[var(--muted)]">
-                    Como os indicadores foram validados e quais são seus
-                    limites.
-                  </p>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-6 text-sm leading-7 text-[var(--muted)]">
-                <p>
-                  Os arquivos foram conferidos contra o dicionário por hash
-                  SHA-256, cabeçalho, tipos, chaves, nulidade e totais de
-                  aceitação. A entrega contém{' '}
-                  {DATA_MANIFEST.acceptance.publicSchools.toLocaleString(
-                    'pt-BR',
-                  )}{' '}
-                  escolas públicas no Censo,{' '}
-                  {DATA_MANIFEST.acceptance.linkedSchools.toLocaleString(
-                    'pt-BR',
-                  )}{' '}
-                  escolas vinculadas à base escolar e{' '}
-                  {DATA_MANIFEST.acceptance.unlinkedSchools} registros escolares
-                  do ENEM sem vínculo com o Censo.
-                </p>
-                <p className="mt-3">
-                  As médias do ENEM devem ser ponderadas pelas contagens da
-                  área. O SAEB é apresentado apenas como contexto estadual, pois
-                  os identificadores de escola e município na origem estão
-                  mascarados. Comparações não representam causalidade.
-                </p>
-                <p className="mt-3 text-xs">
-                  Fontes: {DOCUMENT_SOURCES.school};{' '}
-                  {DOCUMENT_SOURCES.municipality}; {DOCUMENT_SOURCES.saeb}.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
         </section>
 
         <section className="relative mb-5 mt-10 overflow-hidden rounded-xl bg-[var(--navy)] p-7 text-white sm:p-9">

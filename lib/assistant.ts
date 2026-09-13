@@ -33,9 +33,29 @@ function decimal(value: number, digits = 1) {
   return value.toLocaleString('pt-BR', { minimumFractionDigits: digits, maximumFractionDigits: digits });
 }
 
+function isGreeting(question: string) {
+  const normalized = question
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('pt-BR')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return /^(oi|ola|opa|e ai|bom dia|boa tarde|boa noite|tudo bem|como vai)( (atlas|assistente|tudo bem|como vai))?$/.test(normalized);
+}
+
 export function answerQuestionLocally(question: string, context: SchoolContext): AssistantAnswer {
   const normalized = question.toLocaleLowerCase('pt-BR');
   const critical = context.school.infrastructure[context.criticalFactor] * 10;
+
+  if (isGreeting(question)) {
+    return {
+      text: `Olá! Sou o Assistente Atlas Escolar e estou com os dados de **${context.school.name}** carregados.\n\nPosso ajudar com infraestrutura, desempenho no ENEM, cobertura dos dados ou o contexto estadual do SAEB. O que você gostaria de analisar?`,
+      mode: 'saudação',
+      engine: 'local',
+    };
+  }
 
   if (normalized.includes('infra') || normalized.includes('gargalo')) {
     const municipal = context.municipalInfrastructure[context.criticalFactor] * 10;

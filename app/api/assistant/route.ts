@@ -10,7 +10,22 @@ type AssistantRequest = {
 
 function endpointFrom(base: string) {
   const normalized = base.replace(/\/$/, '');
-  return normalized.endsWith('/chat/completions') ? normalized : `${normalized}/chat/completions`;
+  if (normalized.endsWith('/chat/completions')) return normalized;
+
+  try {
+    const url = new URL(normalized);
+    if (
+      url.hostname === 'api.cloudflare.com'
+      && /^\/client\/v4\/accounts\/[^/]+$/.test(url.pathname)
+    ) {
+      url.pathname = `${url.pathname}/ai/v1/chat/completions`;
+      return url.toString();
+    }
+  } catch {
+    // O fetch produzirá o erro apropriado para URLs inválidas.
+  }
+
+  return `${normalized}/chat/completions`;
 }
 
 export async function POST(request: Request) {
@@ -40,6 +55,9 @@ export async function POST(request: Request) {
   const recentQuestions = Array.isArray(body.recentQuestions)
     ? body.recentQuestions.filter((item): item is string => typeof item === 'string').slice(-3)
     : [];
+  const grounding = localAnswer.mode === 'síntese auditável'
+    ? buildAssistantGrounding(context)
+    : undefined;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 20_000);
 
@@ -52,16 +70,23 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model,
-        temperature: 0.1,
+        temperature: 0,
         max_tokens: 700,
         messages: [
           {
             role: 'system',
-            content: 'Você é o Assistente Atlas Escolar. Responda em português brasileiro somente com base no JSON fornecido. Seja direto, cite números e contagens de participantes, não invente campos, não infira causalidade e respeite todas as ressalvas metodológicas. Use Markdown simples. Se a evidência não existir, diga explicitamente.',
+            content: 'Você é o Assistente Atlas Escolar. Responda em português brasileiro somente com base no conteúdo fornecido. Se o modo da resposta auditável for "saudação", cumprimente naturalmente e ofereça ajuda sobre os dados da escola. Para qualquer outro modo, devolva exatamente o texto da RESPOSTA AUDITÁVEL DE REFERÊNCIA, sem acrescentar, remover, reformular, recalcular ou inferir informações. Preserve o Markdown simples.',
           },
           {
             role: 'user',
-            content: JSON.stringify({ question, recentQuestions, evidence: buildAssistantGrounding(context) }),
+            content: [
+              `PERGUNTA ATUAL (responda exatamente a ela):\n${question}`,
+              `RESPOSTA AUDITÁVEL DE REFERÊNCIA (modo: ${localAnswer.mode}):\n${localAnswer.text}`,
+              `PERGUNTAS ANTERIORES (apenas contexto):\n${JSON.stringify(recentQuestions)}`,
+              grounding
+                ? `EVIDÊNCIAS E RESSALVAS:\n${JSON.stringify(grounding)}`
+                : '',
+            ].join('\n\n'),
           },
         ],
       }),

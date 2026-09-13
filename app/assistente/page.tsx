@@ -304,10 +304,6 @@ export default function AssistantPage() {
                   </button>
                 ))}
               </div>
-              <div className="mt-6 rounded-xl bg-[var(--teal-soft)] p-4 text-[11px] leading-5 text-[var(--teal)]">
-                O assistente recebe apenas o recorte estruturado da escola
-                selecionada, não os CSVs completos nem credenciais do provedor.
-              </div>
             </aside>
           </div>
         </section>

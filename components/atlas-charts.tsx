@@ -26,8 +26,8 @@ export function InfrastructureChart({ context }: { context: SchoolContext }) {
     <ChartContainer config={infrastructureConfig} className="h-[310px] w-full" initialDimension={{ width: 660, height: 310 }}>
       <BarChart data={data} margin={{ top: 22, right: 6, left: -14, bottom: 16 }} barGap={3}>
         <CartesianGrid vertical={false} stroke="#ecece7" />
-        <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} tick={{ fontSize: 11, fill: '#66737a' }} dy={10} />
-        <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickFormatter={(value) => `${value}%`} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#7d878c' }} />
+        <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} tick={{ fontSize: 12, fill: '#66737a' }} dy={10} />
+        <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickFormatter={(value) => `${value}%`} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#7d878c' }} />
         <ChartTooltip cursor={{ fill: '#f4f5f1' }} content={<ChartTooltipContent indicator="dot" />} />
         <Bar dataKey="school" name="school" fill="var(--color-school)" radius={[6, 6, 2, 2]} maxBarSize={28} />
         {context.compareMunicipal && <Bar dataKey="municipality" name="municipality" fill="var(--color-municipality)" radius={[6, 6, 2, 2]} maxBarSize={28} />}
@@ -52,8 +52,8 @@ export function EnemPerformanceChart({ context }: { context: SchoolContext }) {
     <ChartContainer config={performanceConfig} className="h-[310px] w-full" initialDimension={{ width: 660, height: 310 }}>
       <BarChart data={data} margin={{ top: 22, right: 6, left: -12, bottom: 16 }} barGap={3}>
         <CartesianGrid vertical={false} stroke="#ecece7" />
-        <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} tick={{ fontSize: 11, fill: '#66737a' }} dy={10} />
-        <YAxis domain={[0, 1000]} ticks={[0, 250, 500, 750, 1000]} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#7d878c' }} />
+        <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} tick={{ fontSize: 12, fill: '#66737a' }} dy={10} />
+        <YAxis domain={[0, 1000]} ticks={[0, 250, 500, 750, 1000]} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#7d878c' }} />
         <ChartTooltip cursor={{ fill: '#f4f5f1' }} content={<ChartTooltipContent indicator="dot" />} />
         <Bar dataKey="school" name="school" fill="var(--color-school)" radius={[6, 6, 2, 2]} maxBarSize={28} />
         {context.compareMunicipal && <Bar dataKey="municipality" name="municipality" fill="var(--color-municipality)" radius={[6, 6, 2, 2]} maxBarSize={28} />}
@@ -78,8 +78,8 @@ export function SaebStateChart() {
     <ChartContainer config={saebConfig} className="h-[300px] w-full" initialDimension={{ width: 720, height: 300 }}>
       <BarChart data={data} margin={{ top: 22, right: 8, left: -12, bottom: 16 }} barGap={3}>
         <CartesianGrid vertical={false} stroke="#ecece7" />
-        <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} tick={{ fontSize: 11, fill: '#66737a' }} dy={10} />
-        <YAxis domain={[0, 400]} ticks={[0, 100, 200, 300, 400]} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#7d878c' }} />
+        <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} tick={{ fontSize: 12, fill: '#66737a' }} dy={10} />
+        <YAxis domain={[0, 400]} ticks={[0, 100, 200, 300, 400]} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#7d878c' }} />
         <ChartTooltip cursor={{ fill: '#f4f5f1' }} content={<ChartTooltipContent indicator="dot" />} />
         <Bar dataKey="portuguese" name="portuguese" fill="var(--color-portuguese)" radius={[6, 6, 2, 2]} maxBarSize={34} />
         <Bar dataKey="mathematics" name="mathematics" fill="var(--color-mathematics)" radius={[6, 6, 2, 2]} maxBarSize={34} />

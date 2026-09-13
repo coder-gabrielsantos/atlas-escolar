@@ -18,10 +18,9 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Atlas — Inteligência educacional',
+  title: 'Atlas',
   description:
     'Diagnóstico escolar orientado por evidências para decisões mais justas.',
-  icons: { icon: '/favicon.svg' },
   openGraph: {
     title: 'Atlas — Inteligência educacional',
     description:
