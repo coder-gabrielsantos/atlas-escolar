@@ -301,7 +301,7 @@ export function buildReport(context: SchoolContext) {
         ? `Menor média válida da escola: ${formatNumber(lowestArea.schoolAverage)} pontos.`
         : 'Não há média válida por área para esta escola na entrega atual.',
       lowestArea
-        ? `Município: ${formatNumber(lowestArea.municipalAverage)} pontos  |  Amostra: ${lowestArea.schoolParticipants}`
+        ? `Município: ${formatNumber(lowestArea.municipalAverage)} pontos  |  Amostra: ${lowestArea.schoolParticipants} ${lowestArea.schoolParticipants === 1 ? 'participante' : 'participantes'}`
         : 'Verificar a disponibilidade e a cobertura antes da análise.',
     );
 

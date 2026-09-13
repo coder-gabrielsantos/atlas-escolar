@@ -58,7 +58,7 @@ export default function ActionPlanPage() {
           : 'Não há média válida por área para esta escola na entrega atual.',
         impact: pedagogicalImpact,
         reference: lowestArea
-          ? `${lowestArea.municipalAverage.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} pontos · ${lowestArea.schoolParticipants} participante(s).`
+          ? `${lowestArea.municipalAverage.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} pontos · ${lowestArea.schoolParticipants} ${lowestArea.schoolParticipants === 1 ? 'participante' : 'participantes'}.`
           : 'A disponibilidade e a cobertura precisam ser verificadas antes da análise.',
         icon: UsersRound,
       },

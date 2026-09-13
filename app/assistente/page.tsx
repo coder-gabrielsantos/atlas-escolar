@@ -182,7 +182,7 @@ export default function AssistantPage() {
         <section className="mt-7 overflow-hidden rounded-[12px] border border-[var(--line)] bg-white shadow-[0_20px_70px_rgb(18_47_56/7%)]">
           <header className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[#fbfcf9] px-4 py-4 sm:px-6">
             <div className="flex min-w-0 items-center gap-3">
-              <div className="relative grid size-11 shrink-0 place-items-center rounded-[10px] bg-[var(--navy)] text-[var(--lime)]">
+              <div className="relative grid size-11 shrink-0 place-items-center rounded-full bg-[var(--navy)] text-[var(--lime)]">
                 <Bot size={20} />
                 <span className="absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full border-[3px] border-white bg-[#62b782]" />
               </div>
@@ -229,7 +229,7 @@ export default function AssistantPage() {
                     className={`flex gap-2.5 sm:gap-3 ${message.role === 'user' ? 'justify-end' : ''}`}
                   >
                     {message.role === 'assistant' && (
-                      <div className="grid size-8 shrink-0 place-items-center rounded-xl bg-[var(--navy)] text-[var(--lime)]">
+                      <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[var(--navy)] text-[var(--lime)]">
                         <Bot size={15} />
                       </div>
                     )}
@@ -253,7 +253,7 @@ export default function AssistantPage() {
                       )}
                     </div>
                     {message.role === 'user' && (
-                      <div className="grid size-8 shrink-0 place-items-center rounded-xl bg-[var(--teal-soft)] text-[var(--teal)]">
+                      <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[var(--teal-soft)] text-[var(--teal)]">
                         <UserRound size={15} />
                       </div>
                     )}
@@ -261,7 +261,7 @@ export default function AssistantPage() {
                 ))}
                 {loading && (
                   <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
-                    <div className="grid size-8 place-items-center rounded-xl bg-[var(--navy)] text-[var(--lime)]">
+                    <div className="grid size-8 place-items-center rounded-full bg-[var(--navy)] text-[var(--lime)]">
                       <Bot size={15} />
                     </div>
                     <span className="animate-pulse">
@@ -276,7 +276,7 @@ export default function AssistantPage() {
                 onSubmit={submit}
                 className="border-t border-[var(--line)] bg-[#fbfcf9] p-3 sm:p-4"
               >
-                <div className="flex items-end gap-2 rounded-[10px] border border-[var(--line-strong)] bg-white p-2 shadow-[0_5px_18px_rgb(18_47_56/7%)] transition-colors focus-within:border-[var(--teal)] focus-within:ring-2 focus-within:ring-[var(--teal-soft)]">
+                <div className="flex items-end gap-2 rounded-[18px] border border-[var(--line-strong)] bg-white p-2 shadow-[0_5px_18px_rgb(18_47_56/7%)] transition-colors focus-within:border-[var(--teal)] focus-within:ring-2 focus-within:ring-[var(--teal-soft)]">
                   <Textarea
                     value={draft}
                     onChange={(event) => setDraft(event.target.value)}
@@ -295,7 +295,7 @@ export default function AssistantPage() {
                     size="icon"
                     disabled={!draft.trim() || loading}
                     aria-label="Enviar pergunta"
-                    className="size-12 shrink-0 rounded-[8px] bg-[var(--teal)] text-white shadow-sm hover:bg-[var(--teal-strong)]"
+                    className="size-12 shrink-0 rounded-full bg-[var(--teal)] text-white shadow-sm hover:bg-[var(--teal-strong)]"
                   >
                     <SendHorizontal size={18} />
                   </Button>

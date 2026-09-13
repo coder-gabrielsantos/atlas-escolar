@@ -170,8 +170,9 @@ export default function OverviewPage() {
                 )}
               </p>
               <p className="mt-3 text-xs leading-relaxed text-[var(--muted)]">
-                Município {formatScore(math.municipalAverage)} · n=
-                {math.schoolParticipants}
+                Município {formatScore(math.municipalAverage)} ·{' '}
+                {math.schoolParticipants}{' '}
+                {math.schoolParticipants === 1 ? 'participante' : 'participantes'}
               </p>
             </div>
           </article>
@@ -207,7 +208,10 @@ export default function OverviewPage() {
             <p>
               <strong className="font-bold">Leitura com cautela.</strong>{' '}
               {context.lowSampleAreas
-                .map((area) => `${area.label} (n=${area.schoolParticipants})`)
+                .map(
+                  (area) =>
+                    `${area.label} (${area.schoolParticipants} ${area.schoolParticipants === 1 ? 'participante' : 'participantes'})`,
+                )
                 .join(', ')}{' '}
               têm menos de 30 participantes.
             </p>
