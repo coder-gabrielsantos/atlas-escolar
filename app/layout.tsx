@@ -6,7 +6,7 @@ import { AtlasProvider } from '@/components/atlas-provider';
 const nunito = Nunito({
   variable: '--font-nunito',
   subsets: ['latin'],
-  weight: ['500'],
+  weight: ['400', '500', '600', '700', '800'],
 });
 
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();

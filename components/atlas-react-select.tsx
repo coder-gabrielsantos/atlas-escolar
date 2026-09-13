@@ -10,7 +10,7 @@ export type AtlasSelectOption = {
 const styles: StylesConfig<AtlasSelectOption, false> = {
   control: (base, state) => ({
     ...base,
-    minHeight: 42,
+    minHeight: 46,
     borderColor: state.isFocused
       ? 'rgba(200, 236, 81, .72)'
       : 'rgba(255, 255, 255, .14)',
@@ -26,14 +26,14 @@ const styles: StylesConfig<AtlasSelectOption, false> = {
       backgroundColor: 'rgba(255, 255, 255, .09)',
     },
   }),
-  valueContainer: (base) => ({ ...base, padding: '7px 11px' }),
+  valueContainer: (base) => ({ ...base, padding: '8px 12px' }),
   singleValue: (base) => ({
     ...base,
     color: '#fff',
-    fontSize: 13,
-    fontWeight: 500,
+    fontSize: 14,
+    fontWeight: 600,
   }),
-  input: (base) => ({ ...base, color: '#fff', fontSize: 13 }),
+  input: (base) => ({ ...base, color: '#fff', fontSize: 16 }),
   indicatorsContainer: (base) => ({ ...base, paddingRight: 4 }),
   indicatorSeparator: () => ({ display: 'none' }),
   dropdownIndicator: (base, state) => ({
@@ -62,7 +62,8 @@ const styles: StylesConfig<AtlasSelectOption, false> = {
   option: (base, state) => ({
     ...base,
     margin: 0,
-    padding: '10px 12px',
+    minHeight: 44,
+    padding: '11px 12px',
     borderBottom: '1px solid rgba(255, 255, 255, .08)',
     borderRadius: 0,
     backgroundColor: state.isSelected
@@ -72,8 +73,8 @@ const styles: StylesConfig<AtlasSelectOption, false> = {
         : 'transparent',
     color: state.isSelected ? '#dff68b' : 'rgba(255, 255, 255, .84)',
     cursor: 'pointer',
-    fontSize: 13,
-    fontWeight: 500,
+    fontSize: 14,
+    fontWeight: 600,
     ':active': { backgroundColor: 'rgba(200, 236, 81, .12)' },
     ':last-of-type': { borderBottom: 0 },
   }),
