@@ -180,7 +180,7 @@ export default function AssistantPage() {
         </section>
 
         <section className="mt-7 overflow-hidden rounded-[12px] border border-[var(--line)] bg-white shadow-[0_20px_70px_rgb(18_47_56/7%)]">
-          <header className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[#fbfcf9] px-4 py-4 sm:px-6">
+          <header className="flex items-center gap-3 border-b border-[var(--line)] bg-[#fbfcf9] px-4 py-4 sm:px-6">
             <div className="flex min-w-0 items-center gap-3">
               <div className="relative grid size-11 shrink-0 place-items-center rounded-full bg-[var(--navy)] text-[var(--lime)]">
                 <Bot size={20} />
@@ -192,9 +192,6 @@ export default function AssistantPage() {
                   {context.school.name}
                 </p>
               </div>
-            </div>
-            <div className="hidden items-center gap-1.5 rounded-full bg-[var(--teal-soft)] px-3 py-1.5 text-xs font-bold text-[var(--teal)] min-[430px]:flex">
-              <ShieldCheck size={14} /> Contexto carregado
             </div>
           </header>
 
@@ -288,7 +285,7 @@ export default function AssistantPage() {
                     }}
                     placeholder="Pergunte sobre esta escola…"
                     aria-label="Pergunta para o Assistente Atlas"
-                    className="max-h-32 min-h-12 resize-none border-0 bg-transparent px-2 py-3 text-lg shadow-none focus-visible:outline-none focus-visible:ring-0 sm:px-3"
+                    className="max-h-32 min-h-12 resize-none border-0 bg-transparent px-2 py-3 text-sm shadow-none focus-visible:outline-none focus-visible:ring-0 sm:px-3"
                   />
                   <Button
                     type="submit"
