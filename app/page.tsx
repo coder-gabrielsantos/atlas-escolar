@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import {
   ArrowRight,
+  ChartNoAxesCombined,
   CircleAlert,
   Database,
+  School,
   Sparkles,
   UsersRound,
   Wifi,
@@ -33,14 +35,14 @@ function statusFor(score: number) {
   if (score < 3)
     return {
       label: 'Crítico',
-      tone: 'bg-[#fbe5e1] text-[#a7433a]',
-      bar: 'bg-[#cc665c]',
+      tone: 'bg-[#fbe5e1] text-[#9f3f37]',
+      bar: 'bg-[#c95f55]',
     };
   if (score < 6)
     return {
       label: 'Atenção',
-      tone: 'bg-[#f7efd7] text-[#87651f]',
-      bar: 'bg-[#d39d36]',
+      tone: 'bg-[#f8efd7] text-[#7e601e]',
+      bar: 'bg-[#d29b32]',
     };
   if (score < 8)
     return {
@@ -50,9 +52,24 @@ function statusFor(score: number) {
     };
   return {
     label: 'Favorável',
-    tone: 'bg-[#eaf3c8] text-[#5a6f17]',
-    bar: 'bg-[#8a9b37]',
+    tone: 'bg-[#eaf3c8] text-[#546b14]',
+    bar: 'bg-[#84962e]',
   };
+}
+
+function ChartKey({ compare }: { compare: boolean }) {
+  return (
+    <div className="atlas-chart-key" aria-label="Legenda do gráfico">
+      <span>
+        <i /> Escola
+      </span>
+      {compare && (
+        <span>
+          <i data-tone="muted" /> Média municipal
+        </span>
+      )}
+    </div>
+  );
 }
 
 export default function OverviewPage() {
@@ -66,98 +83,129 @@ export default function OverviewPage() {
 
   return (
     <AtlasShell>
-      <div className="mx-auto max-w-[1500px] px-5 py-7 sm:px-8 lg:px-10 lg:py-9">
-        <section>
+      <div className="atlas-page">
+        <section className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
-            <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.13em] text-[var(--teal)]">
+            <div className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[var(--teal)]">
               <Sparkles size={14} /> Panorama da escola
             </div>
-            <h1 className="max-w-3xl text-[clamp(2rem,4vw,3.45rem)] font-semibold leading-[1.02] tracking-[-0.052em]">
-              {greeting()}.
+            <h1 className="atlas-page-heading max-w-3xl">
+              {greeting()}, vamos aos dados.
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--muted)] sm:text-base">
-              Indicadores do Censo Escolar, ENEM e contexto estadual do SAEB.
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--muted)] sm:text-base">
+              Uma leitura direta dos indicadores que mais ajudam a orientar as
+              próximas decisões.
             </p>
+          </div>
+          <div className="flex w-fit items-center gap-2 rounded-full border border-[var(--line)] bg-white px-3.5 py-2 text-xs font-semibold text-[var(--muted)] shadow-sm">
+            <School size={14} className="text-[var(--teal)]" />
+            Ano de referência {context.school.year}
           </div>
         </section>
 
-        <section className="mt-8 grid gap-4 md:grid-cols-2 2xl:grid-cols-[1.25fr_1fr_1fr_1fr]">
-          <article className="relative overflow-hidden rounded-xl bg-[var(--navy)] p-6 text-white shadow-[0_18px_50px_rgb(23_35_46/10%)] sm:p-7">
-            <div className="absolute -right-12 -top-16 size-52 rounded-full border-[42px] border-white/[0.035]" />
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--lime)]">
-              Prioridade de infraestrutura
-            </p>
-            <p className="mt-7 text-2xl font-semibold tracking-[-0.035em]">
-              {context.criticalFactorName}
-            </p>
-            <div className="mt-3 flex items-end justify-between gap-4">
-              <p className="text-sm text-white/50">Menor índice composto</p>
-              <p className="text-[40px] font-semibold leading-none">
+        <section className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
+          <article className="relative flex min-h-[190px] flex-col justify-between overflow-hidden rounded-[12px] bg-[var(--navy)] p-5 text-white shadow-[0_18px_55px_rgb(18_47_56/16%)] sm:p-6">
+            <div className="absolute -right-12 -top-16 size-52 rounded-full border-[42px] border-white/[0.04]" />
+            <div className="relative flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.13em] text-[var(--lime)]">
+                  Maior prioridade
+                </p>
+                <p className="mt-3 max-w-[16rem] text-xl font-bold leading-tight tracking-[-0.035em] sm:text-2xl">
+                  {context.criticalFactorName}
+                </p>
+              </div>
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-white/8 text-[var(--lime)]">
+                <ChartNoAxesCombined size={19} />
+              </span>
+            </div>
+            <div className="relative mt-6 flex items-end justify-between gap-4">
+              <p className="max-w-[9rem] text-xs leading-relaxed text-white/52">
+                Menor índice de infraestrutura
+              </p>
+              <p className="atlas-kpi-value text-white">
                 {criticalPercentage.toFixed(0)}
-                <span className="ml-2 text-base">%</span>
+                <span className="ml-1 text-base font-bold text-white/60">%</span>
               </p>
             </div>
           </article>
 
-          <article className="atlas-card flex flex-col justify-center p-6">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--muted)]">
+          <article className="atlas-card flex min-h-[190px] flex-col justify-between p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--muted)]">
                 Registros ENEM
               </p>
-              <UsersRound size={18} className="text-[var(--teal)]" />
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--teal-soft)] text-[var(--teal)]">
+                <UsersRound size={17} />
+              </span>
             </div>
-            <p className="mt-7 text-[40px] font-semibold leading-none tracking-[-0.055em]">
-              {context.school.records.toLocaleString('pt-BR')}
-            </p>
-            <p className="mt-5 text-xs text-[var(--muted)]">
-              {context.lowSampleAreas.length
-                ? `${context.lowSampleAreas.length} área(s) com amostra abaixo de 30`
-                : 'Amostra ≥30 em todas as áreas'}
-            </p>
+            <div className="mt-5">
+              <p className="atlas-kpi-value">
+                {context.school.records.toLocaleString('pt-BR')}
+              </p>
+              <p className="mt-3 text-xs leading-relaxed text-[var(--muted)]">
+                {context.lowSampleAreas.length
+                  ? `${context.lowSampleAreas.length} área(s) com amostra reduzida`
+                  : 'Amostra suficiente em todas as áreas'}
+              </p>
+            </div>
           </article>
 
-          <article className="atlas-card flex flex-col justify-center p-6">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--muted)]">
+          <article className="atlas-card flex min-h-[190px] flex-col justify-between p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--muted)]">
                 Matemática
               </p>
-              <Database size={18} className="text-[var(--teal)]" />
-            </div>
-            <p className="mt-7 text-[40px] font-semibold leading-none tracking-[-0.055em]">
-              {formatScore(math.schoolAverage)}
-              <span className="ml-3 inline-block text-sm font-normal tracking-normal text-[var(--muted)]">
-                pts
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--teal-soft)] text-[var(--teal)]">
+                <Database size={17} />
               </span>
-            </p>
-            <p className="mt-5 text-xs text-[var(--muted)]">
-              Município: {formatScore(math.municipalAverage)} · n=
-              {math.schoolParticipants}
-            </p>
+            </div>
+            <div className="mt-5">
+              <p className="atlas-kpi-value break-words">
+                {formatScore(math.schoolAverage)}
+                {math.schoolAverage !== null && (
+                  <span className="ml-1 text-xs font-semibold tracking-normal text-[var(--muted)]">
+                    pts
+                  </span>
+                )}
+              </p>
+              <p className="mt-3 text-xs leading-relaxed text-[var(--muted)]">
+                Município {formatScore(math.municipalAverage)} · n=
+                {math.schoolParticipants}
+              </p>
+            </div>
           </article>
 
-          <article className="atlas-card flex flex-col justify-center p-6">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--muted)]">
+          <article className="atlas-card flex min-h-[190px] flex-col justify-between p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--muted)]">
                 Conectividade
               </p>
-              <Wifi size={18} className="text-[var(--teal)]" />
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--teal-soft)] text-[var(--teal)]">
+                <Wifi size={17} />
+              </span>
             </div>
-            <p className="mt-7 text-[40px] font-semibold leading-none tracking-[-0.055em]">
-              {(context.connectivityScore * 10).toFixed(0)}
-              <span className="ml-2 text-base">%</span>
-            </p>
-            <p className="mt-5 text-xs text-[var(--muted)]">
-              Índice composto · situação{' '}
-              {context.connectivityStatus.toLowerCase()}
-            </p>
+            <div className="mt-5">
+              <p className="atlas-kpi-value">
+                {(context.connectivityScore * 10).toFixed(0)}
+                <span className="ml-1 text-base font-bold text-[var(--muted)]">
+                  %
+                </span>
+              </p>
+              <p className="mt-3 text-xs leading-relaxed text-[var(--muted)]">
+                Índice composto · {context.connectivityStatus.toLowerCase()}
+              </p>
+            </div>
           </article>
         </section>
 
         {context.lowSampleAreas.length > 0 && (
-          <div className="mt-4 flex gap-3 rounded-2xl border border-[#ead8a8] bg-[#fff9e9] p-4 text-sm text-[#725a1f]">
-            <CircleAlert size={18} className="mt-0.5 shrink-0" />
+          <div className="mt-4 flex gap-3 rounded-2xl border border-[#ead8a8] bg-[#fff9e9] p-4 text-sm leading-relaxed text-[#725a1f] sm:items-center">
+            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#f3e5bd]">
+              <CircleAlert size={17} />
+            </span>
             <p>
-              Interprete com cautela:{' '}
+              <strong className="font-bold">Leitura com cautela.</strong>{' '}
               {context.lowSampleAreas
                 .map((area) => `${area.label} (n=${area.schoolParticipants})`)
                 .join(', ')}{' '}
@@ -166,52 +214,64 @@ export default function OverviewPage() {
           </div>
         )}
 
-        <section className="mt-10 grid gap-5 xl:grid-cols-2">
-          <article className="atlas-card p-5 sm:p-7">
-            <p className="atlas-eyebrow">Infraestrutura</p>
-            <h2 className="atlas-section-title">Escola e média municipal</h2>
-            <p className="atlas-section-copy">
-              Percentuais compostos conforme as regras do dicionário.
-            </p>
-            <div className="chart-scroll mt-3 pb-2">
-              <div className="min-w-[560px]">
-                <InfrastructureChart context={context} />
+        <section className="mt-10 grid gap-4 xl:grid-cols-2">
+          <article className="atlas-card min-w-0 p-4 sm:p-6">
+            <div>
+              <div>
+                <p className="atlas-eyebrow">Infraestrutura</p>
+                <h2 className="atlas-section-title">Escola e município</h2>
+                <p className="atlas-section-copy">
+                  Percentuais compostos por dimensão avaliada.
+                </p>
               </div>
             </div>
+            <div className="mt-4 min-w-0">
+              <InfrastructureChart context={context} />
+            </div>
+            <div className="mt-2">
+              <ChartKey compare={context.compareMunicipal} />
+            </div>
           </article>
-          <article className="atlas-card p-5 sm:p-7">
-            <p className="atlas-eyebrow">ENEM 2025</p>
-            <h2 className="atlas-section-title">Médias por área</h2>
-            <p className="atlas-section-copy">
-              Cada resultado traz sua própria contagem de participantes.
-            </p>
-            <div className="chart-scroll mt-3 pb-2">
-              <div className="min-w-[560px]">
-                <EnemPerformanceChart context={context} />
+
+          <article className="atlas-card min-w-0 p-4 sm:p-6">
+            <div>
+              <div>
+                <p className="atlas-eyebrow">ENEM 2025</p>
+                <h2 className="atlas-section-title">Médias por área</h2>
+                <p className="atlas-section-copy">
+                  Resultados acompanhados da amostra de participantes.
+                </p>
               </div>
+            </div>
+            <div className="mt-4 min-w-0">
+              <EnemPerformanceChart context={context} />
+            </div>
+            <div className="mt-2">
+              <ChartKey compare={context.compareMunicipal} />
             </div>
           </article>
         </section>
 
-        <section className="mt-10 grid gap-5 xl:grid-cols-2">
-          <article className="atlas-card p-5 sm:p-7">
+        <section className="mt-4 grid gap-4 xl:grid-cols-2">
+          <article className="atlas-card p-4 sm:p-6">
             <p className="atlas-eyebrow">Diagnóstico detalhado</p>
-            <h2 className="atlas-section-title">
-              Composição da infraestrutura
-            </h2>
-            <div className="mt-6 space-y-5">
+            <h2 className="atlas-section-title">Composição da infraestrutura</h2>
+            <p className="atlas-section-copy">
+              Situação da escola em cada dimensão do indicador.
+            </p>
+            <div className="mt-6 grid gap-y-5">
               {INFRA_KEYS.map((key) => {
                 const score = context.school.infrastructure[key];
                 const status = statusFor(score);
                 return (
                   <div key={key}>
-                    <div className="mb-2 flex items-center justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold">
+                    <div className="mb-2.5 flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold leading-snug">
                           {INFRA_LABELS[key]}
                         </p>
-                        <p className="mt-0.5 text-[11px] text-[var(--muted)]">
-                          Município:{' '}
+                        <p className="mt-1 text-xs text-[var(--muted)]">
+                          Município{' '}
                           {(context.municipalInfrastructure[key] * 10).toFixed(
                             1,
                           )}
@@ -219,12 +279,12 @@ export default function OverviewPage() {
                         </p>
                       </div>
                       <span
-                        className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${status.tone}`}
+                        className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ${status.tone}`}
                       >
                         {status.label} · {(score * 10).toFixed(1)}%
                       </span>
                     </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-[var(--canvas)]">
+                    <div className="h-2.5 overflow-hidden rounded-full bg-[var(--canvas-deep)]">
                       <div
                         className={`h-full rounded-full ${status.bar}`}
                         style={{ width: `${score * 10}%` }}
@@ -236,19 +296,17 @@ export default function OverviewPage() {
             </div>
           </article>
 
-          <article className="atlas-card p-5 sm:p-7">
+          <article className="atlas-card min-w-0 p-4 sm:p-6">
             <p className="atlas-eyebrow">SAEB 2023</p>
             <h2 className="atlas-section-title">Contexto do Maranhão</h2>
             <p className="atlas-section-copy">
-              Médias estaduais ponderadas pelo número de estudantes presentes.
+              Médias estaduais ponderadas por estudantes presentes.
             </p>
-            <div className="chart-scroll mt-3 pb-2">
-              <div className="min-w-[520px]">
-                <SaebStateChart />
-              </div>
+            <div className="mt-4 min-w-0">
+              <SaebStateChart />
             </div>
             {stateSaebHighSchool && (
-              <p className="mt-2 text-xs text-[var(--muted)]">
+              <p className="mt-1 rounded-xl bg-[var(--canvas)] px-3.5 py-3 text-xs leading-relaxed text-[var(--muted)]">
                 Ensino Médio: participação de{' '}
                 {stateSaebHighSchool.TAXA_PARTICIPACAO_AGREGADA?.toLocaleString(
                   'pt-BR',
@@ -261,20 +319,21 @@ export default function OverviewPage() {
           </article>
         </section>
 
-        <section className="relative mb-5 mt-10 overflow-hidden rounded-xl bg-[var(--navy)] p-7 text-white sm:p-9">
-          <div className="relative flex flex-col justify-between gap-7 lg:flex-row lg:items-center">
+        <section className="relative mb-2 mt-6 overflow-hidden rounded-[12px] bg-[var(--navy)] p-5 text-white shadow-[0_22px_65px_rgb(18_47_56/14%)] sm:p-7 lg:p-8">
+          <div className="absolute -right-14 -top-20 size-60 rounded-full border-[48px] border-white/[0.035]" />
+          <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
             <div>
-              <p className="text-xl font-semibold tracking-[-0.035em]">
-                Transforme o diagnóstico em acompanhamento
+              <p className="text-xl font-bold tracking-[-0.035em] sm:text-2xl">
+                Transforme o diagnóstico em ação
               </p>
-              <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/52">
-                O plano usa os sinais reais da escola selecionada e mantém o
-                progresso no navegador.
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/58">
+                Leve as principais evidências da escola para o planejamento e
+                para a próxima reunião da equipe.
               </p>
             </div>
             <Link
               href="/plano-de-acao"
-              className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--lime)] px-5 text-sm font-semibold text-[var(--navy)]"
+              className="inline-flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--lime)] px-5 text-sm font-bold text-[var(--navy)] transition hover:bg-white sm:w-fit"
             >
               Abrir plano de ação <ArrowRight size={17} />
             </Link>

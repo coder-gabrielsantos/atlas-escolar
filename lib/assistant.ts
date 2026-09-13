@@ -99,7 +99,7 @@ export function answerQuestionLocally(question: string, context: SchoolContext):
     });
     return {
       text: `Resultados do ENEM 2025 por área:\n\n${lines.map((line) => `• ${line}`).join('\n')}\n\nA comparação municipal usa a agregação entregue; amostras abaixo de 30 devem ser interpretadas com cautela.`,
-      source: `${DOCUMENT_SOURCES.school}; ${DOCUMENT_SOURCES.municipality}`,
+      source: 'ENEM e Censo Escolar 2025 · escola e município',
       mode: 'comparação descritiva',
       chart: 'performance',
       engine: 'local',
@@ -118,7 +118,7 @@ export function answerQuestionLocally(question: string, context: SchoolContext):
   const lowestPerformance = context.lowestPerformanceArea;
   return {
     text: `A escola **${context.school.name}** possui **${context.school.records} registro(s) do ENEM**. O menor índice composto de infraestrutura é **${context.criticalFactorName} (${decimal(critical)}%)**.${lowestPerformance ? ` A menor média válida do ENEM é **${lowestPerformance.label}: ${decimal(lowestPerformance.schoolAverage ?? 0)} pontos** (n=${lowestPerformance.schoolParticipants}).` : ' Não há média escolar válida do ENEM nas áreas acompanhadas.'}\n\nHá ${context.lowSampleAreas.length} área(s) com amostra abaixo de 30. Esses sinais apoiam a priorização, mas devem ser validados com a equipe escolar.`,
-    source: `${DOCUMENT_SOURCES.school}; ${DOCUMENT_SOURCES.municipality}`,
+    source: 'ENEM e Censo Escolar 2025 · escola e município',
     mode: 'síntese auditável',
     engine: 'local',
   };
