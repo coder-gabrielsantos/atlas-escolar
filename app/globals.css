@@ -271,6 +271,50 @@ textarea,
   background-clip: padding-box;
 }
 
+@keyframes atlas-mobile-menu-overlay-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes atlas-mobile-menu-overlay-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes atlas-mobile-menu-slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes atlas-mobile-menu-slide-out {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.atlas-mobile-menu-overlay {
+  animation: atlas-mobile-menu-overlay-in 220ms ease-out both;
+}
+
+.atlas-mobile-menu-overlay[data-closing='true'] {
+  animation-name: atlas-mobile-menu-overlay-out;
+  animation-timing-function: ease-in;
+}
+
+.atlas-mobile-menu-panel {
+  animation: atlas-mobile-menu-slide-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform;
+}
+
+.atlas-mobile-menu-panel[data-closing='true'] {
+  animation-name: atlas-mobile-menu-slide-out;
+  animation-duration: 240ms;
+  animation-timing-function: ease-in;
+}
+
 @media (min-width: 640px) {
   .atlas-page {
     padding: 32px 28px 44px;
