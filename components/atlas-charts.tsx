@@ -8,11 +8,13 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import {
+  ENEM_AREA_KEYS,
   ENEM_AREA_SHORT_LABELS,
   INFRA_KEYS,
   INFRA_SHORT_LABELS,
   SAEB_STATE,
   SchoolContext,
+  TerritoryMetrics,
 } from '@/lib/atlas-data';
 
 const infrastructureConfig = {
@@ -144,6 +146,157 @@ export function EnemPerformanceChart({ context }: { context: SchoolContext }) {
             fill="var(--color-municipality)"
             radius={[6, 6, 2, 2]}
             maxBarSize={28}
+          />
+        )}
+      </BarChart>
+    </ChartContainer>
+  );
+}
+
+export function TerritoryInfrastructureChart({
+  primary,
+  secondary,
+}: {
+  primary: TerritoryMetrics;
+  secondary?: TerritoryMetrics;
+}) {
+  const config = {
+    primary: { label: primary.name, color: '#087c70' },
+    secondary: {
+      label: secondary?.name ?? 'Comparação',
+      color: '#203741',
+    },
+  } satisfies ChartConfig;
+  const data = INFRA_KEYS.map((key) => ({
+    label: INFRA_SHORT_LABELS[key],
+    primary: Number((primary.infrastructure[key] * 10).toFixed(2)),
+    secondary: secondary
+      ? Number((secondary.infrastructure[key] * 10).toFixed(2))
+      : undefined,
+  }));
+
+  return (
+    <ChartContainer
+      config={config}
+      className="h-[270px] w-full sm:h-[310px]"
+      initialDimension={{ width: 660, height: 310 }}
+    >
+      <BarChart
+        accessibilityLayer
+        data={data}
+        margin={{ top: 18, right: 0, left: -20, bottom: 10 }}
+        barGap={3}
+      >
+        <CartesianGrid vertical={false} stroke="#ecece7" />
+        <XAxis
+          dataKey="label"
+          tickLine={false}
+          axisLine={false}
+          interval={0}
+          tick={{ fontSize: 11, fill: '#627178' }}
+          dy={9}
+        />
+        <YAxis
+          domain={[0, 100]}
+          ticks={[0, 25, 50, 75, 100]}
+          tickFormatter={(value) => `${value}%`}
+          tickLine={false}
+          axisLine={false}
+          tick={{ fontSize: 11, fill: '#7d878c' }}
+        />
+        <ChartTooltip
+          cursor={{ fill: '#f2f5f1' }}
+          content={<ChartTooltipContent indicator="dot" />}
+        />
+        <Bar
+          dataKey="primary"
+          name="primary"
+          fill="var(--color-primary)"
+          radius={[6, 6, 2, 2]}
+          maxBarSize={32}
+        />
+        {secondary && (
+          <Bar
+            dataKey="secondary"
+            name="secondary"
+            fill="var(--color-secondary)"
+            radius={[6, 6, 2, 2]}
+            maxBarSize={32}
+          />
+        )}
+      </BarChart>
+    </ChartContainer>
+  );
+}
+
+export function TerritoryPerformanceChart({
+  primary,
+  secondary,
+}: {
+  primary: TerritoryMetrics;
+  secondary?: TerritoryMetrics;
+}) {
+  const config = {
+    primary: { label: primary.name, color: '#087c70' },
+    secondary: {
+      label: secondary?.name ?? 'Comparação',
+      color: '#203741',
+    },
+  } satisfies ChartConfig;
+  const data = ENEM_AREA_KEYS.map((key) => ({
+    label: ENEM_AREA_SHORT_LABELS[key],
+    primary: Number(primary.averages[key].toFixed(2)),
+    secondary: secondary
+      ? Number(secondary.averages[key].toFixed(2))
+      : undefined,
+  }));
+
+  return (
+    <ChartContainer
+      config={config}
+      className="h-[270px] w-full sm:h-[310px]"
+      initialDimension={{ width: 660, height: 310 }}
+    >
+      <BarChart
+        accessibilityLayer
+        data={data}
+        margin={{ top: 18, right: 0, left: -19, bottom: 10 }}
+        barGap={3}
+      >
+        <CartesianGrid vertical={false} stroke="#ecece7" />
+        <XAxis
+          dataKey="label"
+          tickLine={false}
+          axisLine={false}
+          interval={0}
+          tick={{ fontSize: 11, fill: '#627178' }}
+          dy={9}
+        />
+        <YAxis
+          domain={[0, 1000]}
+          ticks={[0, 250, 500, 750, 1000]}
+          tickLine={false}
+          axisLine={false}
+          tick={{ fontSize: 11, fill: '#7d878c' }}
+        />
+        <ChartTooltip
+          cursor={{ fill: '#f2f5f1' }}
+          content={<ChartTooltipContent indicator="dot" />}
+        />
+        <Bar
+          dataKey="primary"
+          name="primary"
+          fill="var(--color-primary)"
+          radius={[6, 6, 2, 2]}
+          maxBarSize={32}
+        />
+        {secondary && (
+          <Bar
+            dataKey="secondary"
+            name="secondary"
+            fill="var(--color-secondary)"
+            radius={[6, 6, 2, 2]}
+            maxBarSize={32}
           />
         )}
       </BarChart>

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import {
   ArrowRight,
+  ArrowLeftRight,
   ChartNoAxesCombined,
   CircleAlert,
   Database,
@@ -17,8 +18,17 @@ import {
   EnemPerformanceChart,
   InfrastructureChart,
   SaebStateChart,
+  TerritoryInfrastructureChart,
+  TerritoryPerformanceChart,
 } from '@/components/atlas-charts';
-import { INFRA_KEYS, INFRA_LABELS, SAEB_STATE } from '@/lib/atlas-data';
+import {
+  buildMunicipalityMetrics,
+  INFRA_KEYS,
+  INFRA_LABELS,
+  SAEB_STATE,
+  STATE_METRICS,
+  type TerritoryMetrics,
+} from '@/lib/atlas-data';
 
 function greeting() {
   const hour = new Date().getHours();
@@ -72,8 +82,264 @@ function ChartKey({ compare }: { compare: boolean }) {
   );
 }
 
+function TerritoryLegend({
+  primary,
+  secondary,
+}: {
+  primary: TerritoryMetrics;
+  secondary?: TerritoryMetrics;
+}) {
+  return (
+    <div className="atlas-chart-key" aria-label="Legenda do gráfico">
+      <span>
+        <i /> {primary.name}
+      </span>
+      {secondary && (
+        <span>
+          <i className="!bg-[var(--navy)]" /> {secondary.name}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function TerritoryOverview({
+  primary,
+  secondary,
+}: {
+  primary: TerritoryMetrics;
+  secondary?: TerritoryMetrics;
+}) {
+  const territories = secondary ? [primary, secondary] : [primary];
+  const metrics = [
+    {
+      label: 'Escolas públicas',
+      icon: School,
+      read: (territory: TerritoryMetrics) =>
+        territory.schoolCount.toLocaleString('pt-BR'),
+    },
+    {
+      label: 'Com Ensino Médio',
+      icon: UsersRound,
+      read: (territory: TerritoryMetrics) =>
+        territory.highSchoolCount.toLocaleString('pt-BR'),
+    },
+    {
+      label: 'Registros ENEM',
+      icon: Database,
+      read: (territory: TerritoryMetrics) =>
+        territory.enemRecords.toLocaleString('pt-BR'),
+    },
+    {
+      label: 'Cobertura identificada',
+      icon: ChartNoAxesCombined,
+      read: (territory: TerritoryMetrics) =>
+        `${territory.linkedCoveragePercentage.toLocaleString('pt-BR', {
+          maximumFractionDigits: 1,
+        })}%`,
+    },
+  ];
+
+  return (
+    <div className="atlas-page">
+      <section className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+        <div>
+          <div className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[var(--teal)]">
+            {secondary ? <ArrowLeftRight size={14} /> : <Sparkles size={14} />}
+            {secondary ? 'Comparativo municipal' : primary.eyebrow}
+          </div>
+          <h1 className="atlas-page-heading max-w-4xl">
+            {secondary
+              ? `${primary.name} e ${secondary.name}`
+              : `Dados de ${primary.name}`}
+          </h1>
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--muted)] sm:text-base">
+            {secondary
+              ? 'Os mesmos indicadores, organizados lado a lado para uma leitura direta das diferenças entre os municípios.'
+              : primary.kind === 'state'
+                ? 'Indicadores consolidados do Maranhão, sem misturar resultados de municípios ou escolas específicas.'
+                : 'Indicadores consolidados do município, sem misturar resultados de uma escola específica.'}
+          </p>
+        </div>
+        <div className="flex w-fit items-center gap-2 rounded-full border border-[var(--line)] bg-white px-3.5 py-2 text-xs font-semibold text-[var(--muted)] shadow-sm">
+          <Database size={14} className="text-[var(--teal)]" />
+          Censo/ENEM 2025
+        </div>
+      </section>
+
+      {secondary && (
+        <section className="mt-7 grid gap-3 sm:grid-cols-2">
+          {territories.map((territory, index) => (
+            <article
+              key={territory.name}
+              className={`rounded-xl border p-4 sm:p-5 ${
+                index === 0
+                  ? 'border-[var(--teal)]/20 bg-[var(--teal-soft)]/55'
+                  : 'border-[var(--navy)]/15 bg-white'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className={`grid size-8 place-items-center rounded-lg text-xs font-extrabold ${
+                    index === 0
+                      ? 'bg-[var(--teal)] text-white'
+                      : 'bg-[var(--navy)] text-white'
+                  }`}
+                >
+                  {index === 0 ? 'A' : 'B'}
+                </span>
+                <div>
+                  <p className="text-sm font-bold">{territory.name}</p>
+                  <p className="mt-0.5 text-xs text-[var(--muted)]">
+                    {territory.enemSchoolCount.toLocaleString('pt-BR')} escolas
+                    com registros do ENEM
+                  </p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </section>
+      )}
+
+      <section className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
+        {metrics.map(({ label, icon: Icon, read }, metricIndex) => (
+          <article
+            key={label}
+            className={`flex min-h-[172px] flex-col justify-between p-5 sm:p-6 ${
+              metricIndex === 0
+                ? 'rounded-[12px] bg-[var(--navy)] text-white shadow-[0_18px_55px_rgb(18_47_56/16%)]'
+                : 'atlas-card'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <p
+                className={`text-[11px] font-bold uppercase tracking-[0.1em] ${
+                  metricIndex === 0
+                    ? 'text-[var(--lime)]'
+                    : 'text-[var(--muted)]'
+                }`}
+              >
+                {label}
+              </p>
+              <span
+                className={`grid size-9 shrink-0 place-items-center rounded-xl ${
+                  metricIndex === 0
+                    ? 'bg-white/8 text-[var(--lime)]'
+                    : 'bg-[var(--teal-soft)] text-[var(--teal)]'
+                }`}
+              >
+                <Icon size={17} />
+              </span>
+            </div>
+            <div
+              className={`mt-5 grid gap-3 ${secondary ? 'grid-cols-2' : ''}`}
+            >
+              {territories.map((territory, index) => (
+                <div
+                  key={territory.name}
+                  className={
+                    secondary && index === 1
+                      ? metricIndex === 0
+                        ? 'border-l border-white/12 pl-3'
+                        : 'border-l border-[var(--line)] pl-3'
+                      : undefined
+                  }
+                >
+                  {secondary && (
+                    <p
+                      className={`mb-1 truncate text-[10px] font-bold uppercase tracking-[0.08em] ${
+                        metricIndex === 0
+                          ? 'text-white/42'
+                          : 'text-[var(--muted)]'
+                      }`}
+                    >
+                      {territory.name}
+                    </p>
+                  )}
+                  <p className="text-[clamp(1.45rem,4vw,2.2rem)] font-extrabold leading-none tracking-[-0.045em]">
+                    {read(territory)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </article>
+        ))}
+      </section>
+
+      <section className="mt-10 grid gap-4 xl:grid-cols-2">
+        <article className="atlas-card min-w-0 p-4 sm:p-6">
+          <p className="atlas-eyebrow">Infraestrutura</p>
+          <h2 className="atlas-section-title">Condições da rede</h2>
+          <p className="atlas-section-copy">
+            Percentual consolidado das escolas em cada dimensão.
+          </p>
+          <div className="mt-4 min-w-0">
+            <TerritoryInfrastructureChart
+              primary={primary}
+              secondary={secondary}
+            />
+          </div>
+          <div className="mt-2">
+            <TerritoryLegend primary={primary} secondary={secondary} />
+          </div>
+        </article>
+
+        <article className="atlas-card min-w-0 p-4 sm:p-6">
+          <p className="atlas-eyebrow">ENEM 2025</p>
+          <h2 className="atlas-section-title">Médias por área</h2>
+          <p className="atlas-section-copy">
+            Resultados agregados e ponderados pelos participantes.
+          </p>
+          <div className="mt-4 min-w-0">
+            <TerritoryPerformanceChart
+              primary={primary}
+              secondary={secondary}
+            />
+          </div>
+          <div className="mt-2">
+            <TerritoryLegend primary={primary} secondary={secondary} />
+          </div>
+        </article>
+      </section>
+
+      {primary.kind === 'state' && (
+        <section className="mt-4">
+          <article className="atlas-card min-w-0 p-4 sm:p-6">
+            <p className="atlas-eyebrow">SAEB 2023</p>
+            <h2 className="atlas-section-title">Contexto do Maranhão</h2>
+            <p className="atlas-section-copy">
+              Médias estaduais ponderadas por estudantes presentes.
+            </p>
+            <div className="mt-4 min-w-0">
+              <SaebStateChart />
+            </div>
+          </article>
+        </section>
+      )}
+    </div>
+  );
+}
+
 export default function OverviewPage() {
-  const { schoolContext: context } = useAtlas();
+  const atlas = useAtlas();
+  const { schoolContext: context } = atlas;
+
+  if (atlas.analysisLevel !== 'school') {
+    const primary =
+      atlas.analysisLevel === 'state'
+        ? STATE_METRICS
+        : buildMunicipalityMetrics(atlas.municipality);
+    const secondary =
+      atlas.analysisLevel === 'municipality' && atlas.compareMunicipalities
+        ? buildMunicipalityMetrics(atlas.comparisonMunicipality)
+        : undefined;
+
+    return (
+      <AtlasShell>
+        <TerritoryOverview primary={primary} secondary={secondary} />
+      </AtlasShell>
+    );
+  }
   const criticalPercentage =
     context.school.infrastructure[context.criticalFactor] * 10;
   const math = context.performanceAreas.find((area) => area.key === 'mt')!;
@@ -125,7 +391,9 @@ export default function OverviewPage() {
               </p>
               <p className="atlas-kpi-value text-white">
                 {criticalPercentage.toFixed(0)}
-                <span className="ml-1 text-base font-bold text-white/60">%</span>
+                <span className="ml-1 text-base font-bold text-white/60">
+                  %
+                </span>
               </p>
             </div>
           </article>
@@ -172,7 +440,9 @@ export default function OverviewPage() {
               <p className="mt-3 text-xs leading-relaxed text-[var(--muted)]">
                 Município {formatScore(math.municipalAverage)} ·{' '}
                 {math.schoolParticipants}{' '}
-                {math.schoolParticipants === 1 ? 'participante' : 'participantes'}
+                {math.schoolParticipants === 1
+                  ? 'participante'
+                  : 'participantes'}
               </p>
             </div>
           </article>
@@ -259,7 +529,9 @@ export default function OverviewPage() {
         <section className="mt-4 grid gap-4 xl:grid-cols-2">
           <article className="atlas-card p-4 sm:p-6">
             <p className="atlas-eyebrow">Diagnóstico detalhado</p>
-            <h2 className="atlas-section-title">Composição da infraestrutura</h2>
+            <h2 className="atlas-section-title">
+              Composição da infraestrutura
+            </h2>
             <p className="atlas-section-copy">
               Situação da escola em cada dimensão do indicador.
             </p>

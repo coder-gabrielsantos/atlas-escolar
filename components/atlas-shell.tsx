@@ -4,14 +4,18 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
+  ArrowLeftRight,
   Bot,
   CircleGauge,
   ClipboardCheck,
+  Map,
+  MapPin,
   Menu,
+  School,
   SlidersHorizontal,
   X,
 } from 'lucide-react';
-import { useAtlas } from '@/components/atlas-provider';
+import { type AnalysisLevel, useAtlas } from '@/components/atlas-provider';
 import { WebMcpTools } from '@/components/webmcp-tools';
 import { AtlasReactSelect } from '@/components/atlas-react-select';
 import { Switch } from '@/components/ui/switch';
@@ -39,66 +43,170 @@ const PAGE_NAMES: Record<string, string> = {
   '/plano-de-acao': 'Plano de ação',
 };
 
+const ANALYSIS_LEVELS: Array<{
+  value: AnalysisLevel;
+  label: string;
+  icon: typeof Map;
+}> = [
+  { value: 'state', label: 'Estado', icon: Map },
+  { value: 'municipality', label: 'Município', icon: MapPin },
+  { value: 'school', label: 'Escola', icon: School },
+];
+
 function Filters({ onDone }: { onDone?: () => void }) {
   const atlas = useAtlas();
+  const municipalityOptions =
+    atlas.analysisLevel === 'school'
+      ? atlas.schoolMunicipalities
+      : atlas.municipalities;
 
   return (
-    <div className="space-y-5">
-      <div className="space-y-2">
-        <label className="atlas-field-label" htmlFor="atlas-state">
-          Estado
-        </label>
-        <AtlasReactSelect
-          id="atlas-state"
-          value={atlas.state}
-          options={atlas.states.map((state) => ({
-            value: state,
-            label: state,
-          }))}
-          onChange={atlas.setStateValue}
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="atlas-field-label" htmlFor="atlas-municipality">
-          Município
-        </label>
-        <AtlasReactSelect
-          id="atlas-municipality"
-          value={atlas.municipality}
-          options={atlas.municipalities.map((municipality) => ({
-            value: municipality,
-            label: municipality,
-          }))}
-          onChange={atlas.setMunicipality}
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="atlas-field-label" htmlFor="atlas-school">
-          Escola
-        </label>
-        <AtlasReactSelect
-          id="atlas-school"
-          value={atlas.schoolCode}
-          options={atlas.schools.map((school) => ({
-            value: school.code,
-            label: school.name,
-          }))}
-          onChange={atlas.setSchoolCode}
-        />
-      </div>
+    <div className="space-y-6">
+      <section>
+        <p className="atlas-field-label">Visualizar dados de</p>
+        <fieldset className="mt-2 grid grid-cols-3 gap-1 rounded-xl border border-white/10 bg-black/10 p-1">
+          <legend className="sr-only">Nível da análise</legend>
+          {ANALYSIS_LEVELS.map(({ value, label, icon: Icon }) => {
+            const active = atlas.analysisLevel === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                onClick={() => atlas.setAnalysisLevel(value)}
+                aria-pressed={active}
+                className={`flex min-h-[58px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-lg px-1 text-[10px] font-bold transition ${
+                  active
+                    ? 'bg-white text-[var(--navy)] shadow-sm'
+                    : 'text-white/45 hover:bg-white/6 hover:text-white/78'
+                }`}
+              >
+                <Icon
+                  size={16}
+                  className={active ? 'text-[var(--teal)]' : undefined}
+                />
+                <span className="truncate">{label}</span>
+              </button>
+            );
+          })}
+        </fieldset>
+      </section>
 
-      <div className="flex items-center justify-between gap-4 border-y border-white/10 py-4">
-        <div>
-          <p className="text-xs font-medium text-white/78">Média municipal</p>
-          <p className="mt-1 text-[11px] text-white/38">Mostrar comparação</p>
+      <section className="space-y-4 rounded-xl border border-white/10 bg-white/[0.035] p-3.5">
+        <div className="space-y-2">
+          <label className="atlas-field-label" htmlFor="atlas-state">
+            Estado
+          </label>
+          <AtlasReactSelect
+            id="atlas-state"
+            value={atlas.state}
+            options={atlas.states.map((state) => ({
+              value: state,
+              label: state,
+            }))}
+            onChange={atlas.setStateValue}
+          />
         </div>
-        <Switch
-          checked={atlas.compareMunicipal}
-          onCheckedChange={atlas.setCompareMunicipal}
-          aria-label="Comparar com a média municipal"
-          className="data-checked:bg-[var(--lime)] data-unchecked:bg-white/15"
-        />
-      </div>
+
+        {atlas.analysisLevel !== 'state' && (
+          <div className="space-y-2">
+            <label className="atlas-field-label" htmlFor="atlas-municipality">
+              {atlas.analysisLevel === 'municipality'
+                ? 'Município / cidade A'
+                : 'Município / cidade'}
+            </label>
+            <AtlasReactSelect
+              id="atlas-municipality"
+              value={atlas.municipality}
+              options={municipalityOptions.map((municipality) => ({
+                value: municipality,
+                label: municipality,
+              }))}
+              onChange={atlas.setMunicipality}
+            />
+          </div>
+        )}
+
+        {atlas.analysisLevel === 'municipality' &&
+          atlas.compareMunicipalities && (
+            <div className="space-y-2">
+              <label
+                className="atlas-field-label"
+                htmlFor="atlas-comparison-municipality"
+              >
+                Município / cidade B
+              </label>
+              <AtlasReactSelect
+                id="atlas-comparison-municipality"
+                value={atlas.comparisonMunicipality}
+                options={atlas.municipalities
+                  .filter((municipality) => municipality !== atlas.municipality)
+                  .map((municipality) => ({
+                    value: municipality,
+                    label: municipality,
+                  }))}
+                onChange={atlas.setComparisonMunicipality}
+              />
+            </div>
+          )}
+
+        {atlas.analysisLevel === 'school' && (
+          <div className="space-y-2">
+            <label className="atlas-field-label" htmlFor="atlas-school">
+              Escola
+            </label>
+            <AtlasReactSelect
+              id="atlas-school"
+              value={atlas.schoolCode}
+              options={atlas.schools.map((school) => ({
+                value: school.code,
+                label: school.name,
+              }))}
+              onChange={atlas.setSchoolCode}
+            />
+          </div>
+        )}
+      </section>
+
+      {atlas.analysisLevel === 'municipality' && (
+        <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.035] p-3.5">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white/7 text-[var(--lime)]">
+              <ArrowLeftRight size={16} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-white/82">
+                Comparar municípios
+              </p>
+              <p className="mt-1 text-[11px] text-white/38">
+                Exibir lado a lado
+              </p>
+            </div>
+          </div>
+          <Switch
+            checked={atlas.compareMunicipalities}
+            onCheckedChange={atlas.setCompareMunicipalities}
+            aria-label="Comparar dois municípios"
+            className="data-checked:bg-[var(--lime)] data-unchecked:bg-white/15"
+          />
+        </div>
+      )}
+
+      {atlas.analysisLevel === 'school' && (
+        <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.035] p-3.5">
+          <div>
+            <p className="text-xs font-bold text-white/82">Média municipal</p>
+            <p className="mt-1 text-[11px] text-white/38">
+              Referência nos gráficos
+            </p>
+          </div>
+          <Switch
+            checked={atlas.compareMunicipal}
+            onCheckedChange={atlas.setCompareMunicipal}
+            aria-label="Comparar com a média municipal"
+            className="data-checked:bg-[var(--lime)] data-unchecked:bg-white/15"
+          />
+        </div>
+      )}
 
       {onDone && (
         <Button
@@ -127,7 +235,8 @@ function Brand() {
 
 export function AtlasShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { schoolContext } = useAtlas();
+  const atlas = useAtlas();
+  const { schoolContext } = atlas;
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filtersClosing, setFiltersClosing] = useState(false);
 
@@ -140,14 +249,23 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
     setFiltersClosing(true);
   };
 
+  const contextLabel =
+    atlas.analysisLevel === 'state'
+      ? 'Maranhão'
+      : atlas.analysisLevel === 'municipality'
+        ? atlas.compareMunicipalities
+          ? `${atlas.municipality} × ${atlas.comparisonMunicipality}`
+          : atlas.municipality
+        : schoolContext.school.name;
+
   return (
     <main className="min-h-[100dvh] bg-[var(--canvas)] text-[var(--ink)]">
       <WebMcpTools />
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[272px] flex-col overflow-y-auto bg-[var(--navy)] px-5 py-6 text-white lg:flex">
+      <aside className="soft-scroll fixed inset-y-0 left-0 z-30 hidden w-[288px] flex-col overflow-y-auto bg-[var(--navy)] px-5 py-6 text-white lg:flex">
         <div className="-mx-5 -mt-6 flex h-[70px] shrink-0 items-center border-b border-white/10 px-7">
           <Brand />
         </div>
-        <nav className="mt-10 space-y-1" aria-label="Navegação principal">
+        <nav className="mt-8 space-y-1" aria-label="Navegação principal">
           {NAVIGATION.map(({ href, label, icon: Icon }) => {
             const active = pathname === href;
             return (
@@ -171,9 +289,9 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="mt-8 border-t border-white/10 pt-7">
+        <div className="mt-7 border-t border-white/10 pt-6">
           <div className="mb-5 flex items-center gap-2 px-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/35">
-            <SlidersHorizontal size={13} /> Contexto da análise
+            <SlidersHorizontal size={13} /> Filtros da análise
           </div>
           <Filters />
         </div>
@@ -195,7 +313,7 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
                 setFiltersClosing(false);
               }
             }}
-            className="atlas-mobile-menu-panel soft-scroll absolute inset-y-0 left-0 w-[min(88vw,380px)] overflow-y-auto bg-[var(--navy)] p-5 pb-[calc(20px+env(safe-area-inset-bottom))] text-white shadow-2xl sm:p-6"
+            className="atlas-mobile-menu-panel soft-scroll absolute inset-y-0 left-0 w-[min(90vw,400px)] overflow-y-auto bg-[var(--navy)] p-5 pb-[calc(20px+env(safe-area-inset-bottom))] text-white shadow-2xl sm:p-6"
           >
             <div className="flex items-center justify-between">
               <Brand />
@@ -208,14 +326,14 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
               </button>
             </div>
             <div className="mb-5 mt-9 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/35 sm:mt-10">
-              <SlidersHorizontal size={13} /> Contexto da análise
+              <SlidersHorizontal size={13} /> Filtros da análise
             </div>
             <Filters onDone={closeFilters} />
           </aside>
         </div>
       )}
 
-      <div className="pb-[calc(84px+env(safe-area-inset-bottom))] lg:pl-[272px] lg:pb-0">
+      <div className="pb-[calc(84px+env(safe-area-inset-bottom))] lg:pl-[288px] lg:pb-0">
         <header className="sticky top-0 z-20 flex h-[70px] items-center justify-between border-b border-[var(--line)] bg-[color:rgba(242,245,241,.9)] px-4 backdrop-blur-xl sm:px-8 lg:px-10">
           <div className="flex min-w-0 items-center gap-3 lg:hidden">
             <button
@@ -237,8 +355,8 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
               {PAGE_NAMES[pathname] ?? 'Atlas'}
             </span>
           </p>
-          <p className="ml-3 max-w-[44vw] truncate text-xs text-[var(--muted)] sm:max-w-[360px]">
-            {schoolContext.school.name}
+          <p className="ml-3 max-w-[50vw] truncate text-xs text-[var(--muted)] sm:max-w-[460px]">
+            {contextLabel}
           </p>
         </header>
         <div id="atlas-content">{children}</div>
