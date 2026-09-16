@@ -62,14 +62,14 @@ const SUGGESTIONS = [
     icon: Bolt,
   },
   {
-    label: 'Gargalo de infraestrutura',
-    question: 'Qual é o principal gargalo de infraestrutura desta escola?',
-    icon: Construction,
-  },
-  {
     label: 'Desempenho no ENEM',
     question: 'Compare as médias do ENEM da escola com o município.',
     icon: BarChart3,
+  },
+  {
+    label: 'Gargalo de infraestrutura',
+    question: 'Qual é o principal gargalo de infraestrutura desta escola?',
+    icon: Construction,
   },
   {
     label: 'Recursos ausentes',
