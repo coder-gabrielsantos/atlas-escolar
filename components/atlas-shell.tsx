@@ -60,7 +60,7 @@ function Filters({ onDone }: { onDone?: () => void }) {
     <div className="space-y-6">
       <section>
         <p className="atlas-field-label">Visualizar dados de</p>
-        <fieldset className="mt-2 grid grid-cols-3 gap-1.5 rounded-[18px] border border-white/15 bg-black/10 p-1.5">
+        <fieldset className="mt-2 grid grid-cols-3 rounded-full bg-[#eef1f4] p-1 shadow-[inset_0_0_0_1px_rgb(18_47_56/5%)]">
           <legend className="sr-only">Nível da análise</legend>
           {ANALYSIS_LEVELS.map(({ value, label }) => {
             const active = atlas.analysisLevel === value;
@@ -70,10 +70,10 @@ function Filters({ onDone }: { onDone?: () => void }) {
                 type="button"
                 onClick={() => atlas.setAnalysisLevel(value)}
                 aria-pressed={active}
-                className={`flex min-h-12 min-w-0 items-center justify-center rounded-[14px] border px-2 text-[11px] font-bold transition ${
+                className={`flex min-h-9 min-w-0 items-center justify-center rounded-full px-2 text-[11px] font-bold transition ${
                   active
-                    ? 'border-[var(--lime)] bg-[var(--lime)] text-[var(--navy)] shadow-[0_6px_18px_rgb(0_0_0/18%)]'
-                    : 'border-transparent text-white/55 hover:border-white/10 hover:bg-white/7 hover:text-white'
+                    ? 'bg-white text-[var(--teal-strong)] shadow-[0_1px_4px_rgb(18_47_56/14%),inset_0_0_0_1px_rgb(18_47_56/6%)]'
+                    : 'text-[#637486] hover:text-[var(--navy)]'
                 }`}
               >
                 <span className="truncate">{label}</span>
