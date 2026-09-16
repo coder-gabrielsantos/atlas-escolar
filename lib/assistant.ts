@@ -383,6 +383,32 @@ function areaFromQuestion(question: string): EnemAreaKey | undefined {
   return undefined;
 }
 
+function asksForAirConditionerCount(question: string) {
+  const normalized = normalize(question);
+  const mentionsAirConditioningEquipment =
+    /\b(?:ar condicionad[oa]s?|ares condicionados?|aparelhos?(?: de)? ar condicionad[oa]s?|equipamentos? de (?:ar condicionado|climatizacao))\b/.test(
+      normalized,
+    );
+  const asksForQuantity =
+    /\b(quantos|quantas|quantidade|numero|total|existem|possui|possuem|tem|ha)\b/.test(
+      normalized,
+    );
+
+  return mentionsAirConditioningEquipment && asksForQuantity;
+}
+
+function answerUnavailableAirConditionerCount(
+  target: ResolvedTarget,
+): AssistantAnswer {
+  return {
+    text: `A base do Atlas **não informa a quantidade de aparelhos de ar-condicionado ${targetLocation(target)}**. Ela registra apenas a quantidade de salas utilizadas climatizadas por escola, no campo \`QT_SALAS_UTILIZA_CLIMATIZADAS\`. Esse indicador não permite calcular quantos aparelhos existem; portanto, não tenho dados para responder essa quantidade.`,
+    source:
+      'Censo Escolar 2025 · campo QT_SALAS_UTILIZA_CLIMATIZADAS; sem campo de quantidade de aparelhos',
+    mode: 'limite da base',
+    engine: 'local',
+  };
+}
+
 function answerEnemCount(
   targets: ResolvedTargets,
   area: EnemAreaKey | undefined,
@@ -647,6 +673,10 @@ export function answerQuestionLocally(
     };
   }
 
+  if (asksForAirConditionerCount(question)) {
+    return answerUnavailableAirConditionerCount(targets.primary);
+  }
+
   const asksSchoolList =
     /\b(quais|liste|listar|lista)\b/.test(normalized) &&
     includesPhrase(normalized, 'escolas');
@@ -759,6 +789,7 @@ export function buildAssistantGrounding(
       caveats: [
         'QTD_REGISTROS representa candidatos/registros e não a soma de presenças por área.',
         'O SAEB é somente contexto estadual; não associar seus resultados à escola ou ao município.',
+        'QT_SALAS_UTILIZA_CLIMATIZADAS representa salas climatizadas, não a quantidade de aparelhos de ar-condicionado.',
         'Não inferir causalidade.',
         'Não há INSE escolar nesta entrega.',
         'Médias do ENEM devem ser lidas com a contagem de participantes da área.',
