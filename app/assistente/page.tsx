@@ -82,7 +82,7 @@ function welcomeMessage(context: SchoolContext): ChatMessage {
   return {
     id: `welcome-${crypto.randomUUID()}`,
     role: 'assistant',
-    text: `Olá! Eu sou o Atlas. Agora posso consultar a base do **Maranhão**, seus **${MUNICIPALITIES.length} municípios** e as **${SCHOOLS.length} escolas identificadas**.\n\nPergunte por uma localidade ou escola específica. Também entendo perguntas de continuação usando o histórico desta conversa.`,
+    text: `Olá! Eu sou o Atlas. Agora posso consultar a base do **Maranhão**, seus **${MUNICIPALITIES.length} municípios** e as **${SCHOOLS.length} escolas identificadas**.\n\nPergunte por uma localidade ou escola específica.`,
     mode: 'contexto da base carregado',
     source: `Contexto atual: ${context.school.name}`,
     engine: 'local',
