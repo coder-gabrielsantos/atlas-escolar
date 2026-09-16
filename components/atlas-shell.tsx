@@ -8,10 +8,7 @@ import {
   Bot,
   CircleGauge,
   ClipboardCheck,
-  Map,
-  MapPin,
   Menu,
-  School,
   SlidersHorizontal,
   X,
 } from 'lucide-react';
@@ -46,11 +43,10 @@ const PAGE_NAMES: Record<string, string> = {
 const ANALYSIS_LEVELS: Array<{
   value: AnalysisLevel;
   label: string;
-  icon: typeof Map;
 }> = [
-  { value: 'state', label: 'Estado', icon: Map },
-  { value: 'municipality', label: 'Município', icon: MapPin },
-  { value: 'school', label: 'Escola', icon: School },
+  { value: 'state', label: 'Estado' },
+  { value: 'municipality', label: 'Município' },
+  { value: 'school', label: 'Escola' },
 ];
 
 function Filters({ onDone }: { onDone?: () => void }) {
@@ -64,9 +60,9 @@ function Filters({ onDone }: { onDone?: () => void }) {
     <div className="space-y-6">
       <section>
         <p className="atlas-field-label">Visualizar dados de</p>
-        <fieldset className="mt-2 grid grid-cols-3 gap-1 rounded-xl border border-white/10 bg-black/10 p-1">
+        <fieldset className="mt-2 grid grid-cols-3 gap-1.5 rounded-[18px] border border-white/15 bg-black/10 p-1.5">
           <legend className="sr-only">Nível da análise</legend>
-          {ANALYSIS_LEVELS.map(({ value, label, icon: Icon }) => {
+          {ANALYSIS_LEVELS.map(({ value, label }) => {
             const active = atlas.analysisLevel === value;
             return (
               <button
@@ -74,16 +70,12 @@ function Filters({ onDone }: { onDone?: () => void }) {
                 type="button"
                 onClick={() => atlas.setAnalysisLevel(value)}
                 aria-pressed={active}
-                className={`flex min-h-[58px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-lg px-1 text-[10px] font-bold transition ${
+                className={`flex min-h-12 min-w-0 items-center justify-center rounded-[14px] border px-2 text-[11px] font-bold transition ${
                   active
-                    ? 'bg-white text-[var(--navy)] shadow-sm'
-                    : 'text-white/45 hover:bg-white/6 hover:text-white/78'
+                    ? 'border-[var(--lime)] bg-[var(--lime)] text-[var(--navy)] shadow-[0_6px_18px_rgb(0_0_0/18%)]'
+                    : 'border-transparent text-white/55 hover:border-white/10 hover:bg-white/7 hover:text-white'
                 }`}
               >
-                <Icon
-                  size={16}
-                  className={active ? 'text-[var(--teal)]' : undefined}
-                />
                 <span className="truncate">{label}</span>
               </button>
             );
@@ -261,8 +253,8 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-[100dvh] bg-[var(--canvas)] text-[var(--ink)]">
       <WebMcpTools />
-      <aside className="soft-scroll fixed inset-y-0 left-0 z-30 hidden w-[288px] flex-col overflow-y-auto bg-[var(--navy)] px-5 py-6 text-white lg:flex">
-        <div className="-mx-5 -mt-6 flex h-[70px] shrink-0 items-center border-b border-white/10 px-7">
+      <aside className="soft-scroll fixed inset-y-0 left-0 z-30 hidden w-[320px] flex-col overflow-y-auto bg-[var(--navy)] px-6 py-6 text-white lg:flex">
+        <div className="-mx-6 -mt-6 flex h-[70px] shrink-0 items-center border-b border-white/10 px-8">
           <Brand />
         </div>
         <nav className="mt-8 space-y-1" aria-label="Navegação principal">
@@ -333,7 +325,7 @@ export function AtlasShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <div className="pb-[calc(84px+env(safe-area-inset-bottom))] lg:pl-[288px] lg:pb-0">
+      <div className="pb-[calc(84px+env(safe-area-inset-bottom))] lg:pl-[320px] lg:pb-0">
         <header className="sticky top-0 z-20 flex h-[70px] items-center justify-between border-b border-[var(--line)] bg-[color:rgba(242,245,241,.9)] px-4 backdrop-blur-xl sm:px-8 lg:px-10">
           <div className="flex min-w-0 items-center gap-3 lg:hidden">
             <button

@@ -2,16 +2,15 @@
 
 import { Fragment, useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeftRight,
+  BarChart3,
   Bot,
-  Building2,
+  Bolt,
+  Construction,
   Database,
   HardDrive,
-  Map,
+  LaptopMinimal,
   RotateCcw,
-  School,
   SendHorizontal,
-  ShieldCheck,
   UserRound,
 } from 'lucide-react';
 import { AtlasShell } from '@/components/atlas-shell';
@@ -57,25 +56,25 @@ const MAX_STORED_MESSAGES = 80;
 
 const SUGGESTIONS = [
   {
-    label: 'ENEM no Maranhão',
-    question: 'Quantos alunos fizeram o ENEM no Maranhão?',
-    icon: Map,
-  },
-  {
-    label: 'ENEM em Coelho Neto',
-    question: 'Quantos alunos fizeram o ENEM em Coelho Neto?',
-    icon: Building2,
-  },
-  {
-    label: 'IFMA de Coelho Neto',
-    question: 'Quantos alunos fizeram o ENEM no IFMA de Coelho Neto?',
-    icon: School,
-  },
-  {
-    label: 'Comparar municípios',
+    label: 'Análise rápida',
     question:
-      'Compare a quantidade de registros do ENEM em Coelho Neto e Caxias.',
-    icon: ArrowLeftRight,
+      'Faça uma análise rápida dos principais indicadores desta escola.',
+    icon: Bolt,
+  },
+  {
+    label: 'Gargalo de infraestrutura',
+    question: 'Qual é o principal gargalo de infraestrutura desta escola?',
+    icon: Construction,
+  },
+  {
+    label: 'Desempenho no ENEM',
+    question: 'Compare as médias do ENEM da escola com o município.',
+    icon: BarChart3,
+  },
+  {
+    label: 'Recursos ausentes',
+    question: 'Quais recursos estão ausentes nesta escola?',
+    icon: LaptopMinimal,
   },
 ];
 
@@ -293,10 +292,6 @@ export default function AssistantPage() {
           <div>
             <p className="atlas-eyebrow">Consulta inteligente da base</p>
             <h1 className="atlas-page-heading mt-3">Converse com o Atlas.</h1>
-            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--muted)] sm:text-base">
-              Pergunte pelo estado, município ou escola. O Atlas localiza o
-              recorte, consulta os dados e faz os cálculos necessários.
-            </p>
           </div>
           <Button
             variant="outline"
@@ -370,11 +365,6 @@ export default function AssistantPage() {
                       }`}
                     >
                       <RichText text={message.text} />
-                      {message.role === 'assistant' && message.source && (
-                        <p className="mt-3 border-t border-[var(--line)] pt-2.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--muted)]">
-                          Fonte: {message.source}
-                        </p>
-                      )}
                       {message.visualization && (
                         <div className="mt-4 min-w-0 rounded-xl bg-white p-2 sm:p-3">
                           <MessageVisualization
@@ -407,8 +397,15 @@ export default function AssistantPage() {
                 onSubmit={submit}
                 className="border-t border-[var(--line)] bg-[#fbfcf9] p-3 sm:p-4"
               >
+                <label
+                  htmlFor="atlas-question"
+                  className="mb-2 block text-xs font-extrabold text-[var(--ink)]"
+                >
+                  Faça sua pergunta ao Atlas
+                </label>
                 <div className="flex items-end gap-2 rounded-[18px] border border-[var(--line-strong)] bg-white p-2 shadow-[0_5px_18px_rgb(18_47_56/7%)] transition-colors focus-within:border-[var(--teal)] focus-within:ring-2 focus-within:ring-[var(--teal-soft)]">
                   <Textarea
+                    id="atlas-question"
                     value={draft}
                     onChange={(event) => setDraft(event.target.value)}
                     onKeyDown={(event) => {
@@ -418,7 +415,7 @@ export default function AssistantPage() {
                       }
                     }}
                     placeholder="Ex.: quantos alunos fizeram o ENEM no IFMA de Coelho Neto?"
-                    aria-label="Pergunta para o Assistente Atlas"
+                    aria-label="Faça sua pergunta ao Atlas"
                     className="max-h-32 min-h-12 resize-none border-0 bg-transparent px-2 py-3 text-sm shadow-none focus-visible:outline-none focus-visible:ring-0 sm:px-3"
                   />
                   <Button
@@ -431,15 +428,9 @@ export default function AssistantPage() {
                     <SendHorizontal size={18} />
                   </Button>
                 </div>
-                <div className="mt-2.5 flex items-center justify-center px-1 text-[11px] leading-relaxed text-[var(--muted)]">
-                  <p className="flex items-center gap-1.5 text-center">
-                    <ShieldCheck
-                      size={13}
-                      className="shrink-0 text-[var(--teal)]"
-                    />
-                    Gráficos aparecem somente quando você pedir.
-                  </p>
-                </div>
+                <p className="mt-2.5 px-1 text-center text-[11px] leading-relaxed text-[var(--muted)]">
+                  Consulte informações importantes para sua análise.
+                </p>
               </form>
             </div>
 
@@ -461,13 +452,6 @@ export default function AssistantPage() {
                     {label}
                   </button>
                 ))}
-              </div>
-              <div className="mt-5 rounded-xl border border-[var(--line)] bg-white p-4">
-                <p className="text-xs font-bold">A conversa tem contexto</p>
-                <p className="mt-2 text-[11px] leading-relaxed text-[var(--muted)]">
-                  Depois de citar uma cidade ou escola, você pode continuar com
-                  “e a média de Matemática?” ou “e lá?”.
-                </p>
               </div>
             </aside>
           </div>
