@@ -55,13 +55,21 @@ function Filters({ onDone }: { onDone?: () => void }) {
     atlas.analysisLevel === 'school'
       ? atlas.schoolMunicipalities
       : atlas.municipalities;
+  const selectedLevelIndex = ANALYSIS_LEVELS.findIndex(
+    ({ value }) => value === atlas.analysisLevel,
+  );
 
   return (
     <div className="space-y-6">
       <section>
         <p className="atlas-field-label">Visualizar dados de</p>
-        <fieldset className="mt-2 grid grid-cols-3 rounded-full bg-[#eef1f4] p-1 shadow-[inset_0_0_0_1px_rgb(18_47_56/5%)]">
+        <fieldset className="relative mt-2 grid grid-cols-3 rounded-full border border-white/30 bg-black/15 p-1 shadow-[inset_0_1px_4px_rgb(0_0_0/18%)]">
           <legend className="sr-only">Nível da análise</legend>
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-1 left-1 w-[calc((100%-0.5rem)/3)] rounded-full border border-white/80 bg-white/10 shadow-[0_3px_12px_rgb(0_0_0/20%),inset_0_1px_0_rgb(255_255_255/12%)] transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transition-none"
+            style={{ transform: `translateX(${selectedLevelIndex * 100}%)` }}
+          />
           {ANALYSIS_LEVELS.map(({ value, label }) => {
             const active = atlas.analysisLevel === value;
             return (
@@ -70,10 +78,8 @@ function Filters({ onDone }: { onDone?: () => void }) {
                 type="button"
                 onClick={() => atlas.setAnalysisLevel(value)}
                 aria-pressed={active}
-                className={`flex min-h-9 min-w-0 items-center justify-center rounded-full px-2 text-[11px] font-bold transition ${
-                  active
-                    ? 'bg-white text-[var(--teal-strong)] shadow-[0_1px_4px_rgb(18_47_56/14%),inset_0_0_0_1px_rgb(18_47_56/6%)]'
-                    : 'text-[#637486] hover:text-[var(--navy)]'
+                className={`relative z-10 flex min-h-9 min-w-0 items-center justify-center rounded-full px-2 text-[11px] font-bold transition-colors duration-300 ${
+                  active ? 'text-white' : 'text-white/45 hover:text-white/80'
                 }`}
               >
                 <span className="truncate">{label}</span>
