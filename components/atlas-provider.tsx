@@ -11,12 +11,18 @@ import {
 import {
   buildSchoolContext,
   DEFAULT_SCHOOL_CODE,
+  MUNICIPALITIES,
   SCHOOLS,
 } from '@/lib/atlas-data';
 
+export type AnalysisLevel = 'state' | 'municipality' | 'school';
+
 type AtlasState = {
+  analysisLevel: AnalysisLevel;
   state: string;
   municipality: string;
+  comparisonMunicipality: string;
+  compareMunicipalities: boolean;
   schoolCode: string;
   compareMunicipal: boolean;
 };
@@ -24,21 +30,32 @@ type AtlasState = {
 type AtlasContextValue = AtlasState & {
   states: string[];
   municipalities: string[];
+  schoolMunicipalities: string[];
   schools: typeof SCHOOLS;
   schoolContext: ReturnType<typeof buildSchoolContext>;
+  setAnalysisLevel: (value: AnalysisLevel) => void;
   setStateValue: (value: string) => void;
   setMunicipality: (value: string) => void;
+  setComparisonMunicipality: (value: string) => void;
+  setCompareMunicipalities: (value: boolean) => void;
   setSchoolCode: (value: string) => void;
   setCompareMunicipal: (value: boolean) => void;
   selectSchoolContext: (schoolCode: string) => void;
 };
 
 const DEFAULT_STATE: AtlasState = {
+  analysisLevel: 'school',
   state: 'MA',
   municipality: 'Coelho Neto',
+  comparisonMunicipality: 'São Luís',
+  compareMunicipalities: false,
   schoolCode: DEFAULT_SCHOOL_CODE,
   compareMunicipal: true,
 };
+
+const MUNICIPALITY_NAMES = MUNICIPALITIES.map(
+  (municipality) => municipality.name,
+).sort((left, right) => left.localeCompare(right, 'pt-BR'));
 
 const AtlasContext = createContext<AtlasContextValue | null>(null);
 
@@ -53,6 +70,12 @@ export function AtlasProvider({ children }: { children: React.ReactNode }) {
       const storedSchool = SCHOOLS.find(
         (school) => school.code === parsed.schoolCode,
       );
+      const storedMunicipality = storedSchool?.municipality;
+      const parsedComparison = parsed.comparisonMunicipality;
+      const storedComparison =
+        parsedComparison && MUNICIPALITY_NAMES.includes(parsedComparison)
+          ? parsedComparison
+          : DEFAULT_STATE.comparisonMunicipality;
       const timer = window.setTimeout(() => {
         setSettings({
           ...DEFAULT_STATE,
@@ -60,6 +83,12 @@ export function AtlasProvider({ children }: { children: React.ReactNode }) {
           state: storedSchool?.state ?? DEFAULT_STATE.state,
           municipality:
             storedSchool?.municipality ?? DEFAULT_STATE.municipality,
+          comparisonMunicipality:
+            storedComparison === storedMunicipality
+              ? (MUNICIPALITY_NAMES.find(
+                  (municipality) => municipality !== storedMunicipality,
+                ) ?? DEFAULT_STATE.comparisonMunicipality)
+              : storedComparison,
           schoolCode: storedSchool?.code ?? DEFAULT_STATE.schoolCode,
         });
       }, 0);
@@ -77,7 +106,8 @@ export function AtlasProvider({ children }: { children: React.ReactNode }) {
     () => [...new Set(SCHOOLS.map((school) => school.state))].sort(),
     [],
   );
-  const municipalities = useMemo(
+  const municipalities = useMemo(() => MUNICIPALITY_NAMES, []);
+  const schoolMunicipalities = useMemo(
     () =>
       [
         ...new Set(
@@ -102,6 +132,30 @@ export function AtlasProvider({ children }: { children: React.ReactNode }) {
     [settings.schoolCode, settings.compareMunicipal],
   );
 
+  const setAnalysisLevel = useCallback((analysisLevel: AnalysisLevel) => {
+    setSettings((current) => {
+      if (analysisLevel !== 'school') return { ...current, analysisLevel };
+
+      const selectedSchool = SCHOOLS.find(
+        (school) => school.code === current.schoolCode,
+      );
+      const fallbackSchool =
+        SCHOOLS.find(
+          (school) =>
+            school.state === current.state &&
+            school.municipality === current.municipality,
+        ) ?? SCHOOLS[0];
+
+      return {
+        ...current,
+        analysisLevel,
+        municipality:
+          selectedSchool?.municipality ?? fallbackSchool.municipality,
+        schoolCode: selectedSchool?.code ?? fallbackSchool.code,
+      };
+    });
+  }, []);
+
   const setStateValue = useCallback((state: string) => {
     const municipality =
       SCHOOLS.find((school) => school.state === state)?.municipality ?? '';
@@ -121,9 +175,33 @@ export function AtlasProvider({ children }: { children: React.ReactNode }) {
             school.state === current.state &&
             school.municipality === municipality,
         )?.code ?? '';
-      return { ...current, municipality, schoolCode };
+      const comparisonMunicipality =
+        current.comparisonMunicipality === municipality
+          ? (MUNICIPALITY_NAMES.find((item) => item !== municipality) ?? '')
+          : current.comparisonMunicipality;
+      return {
+        ...current,
+        municipality,
+        comparisonMunicipality,
+        schoolCode: schoolCode || current.schoolCode,
+      };
     });
   }, []);
+
+  const setComparisonMunicipality = useCallback(
+    (comparisonMunicipality: string) =>
+      setSettings((current) =>
+        comparisonMunicipality === current.municipality
+          ? current
+          : { ...current, comparisonMunicipality },
+      ),
+    [],
+  );
+  const setCompareMunicipalities = useCallback(
+    (compareMunicipalities: boolean) =>
+      setSettings((current) => ({ ...current, compareMunicipalities })),
+    [],
+  );
 
   const setSchoolCode = useCallback(
     (schoolCode: string) =>
@@ -140,6 +218,7 @@ export function AtlasProvider({ children }: { children: React.ReactNode }) {
     if (!school) return;
     setSettings((current) => ({
       ...current,
+      analysisLevel: 'school',
       state: school.state,
       municipality: school.municipality,
       schoolCode: school.code,
@@ -150,10 +229,14 @@ export function AtlasProvider({ children }: { children: React.ReactNode }) {
     ...settings,
     states,
     municipalities,
+    schoolMunicipalities,
     schools,
     schoolContext,
+    setAnalysisLevel,
     setStateValue,
     setMunicipality,
+    setComparisonMunicipality,
+    setCompareMunicipalities,
     setSchoolCode,
     setCompareMunicipal,
     selectSchoolContext,

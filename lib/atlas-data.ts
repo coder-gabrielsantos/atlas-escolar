@@ -246,10 +246,36 @@ export type Municipality = {
   infrastructure: Record<InfraKey, number>;
 };
 
+export type TerritoryMetrics = {
+  kind: 'state' | 'municipality';
+  name: string;
+  eyebrow: string;
+  schoolCount: number;
+  highSchoolCount: number;
+  enemRecords: number;
+  enemSchoolCount: number;
+  linkedEnemSchoolCount: number;
+  linkedCoveragePercentage: number;
+  participants: Record<EnemAreaKey, number>;
+  averages: Record<EnemAreaKey, number>;
+  infrastructure: Record<InfraKey, number>;
+};
+
 function average(values: number[]) {
   return values.length
     ? values.reduce((total, value) => total + value, 0) / values.length
     : 0;
+}
+
+function weightedAverage(
+  values: Array<{ value: number; weight: number }>,
+): number {
+  const totalWeight = values.reduce((total, item) => total + item.weight, 0);
+  if (!totalWeight) return 0;
+  return (
+    values.reduce((total, item) => total + item.value * item.weight, 0) /
+    totalWeight
+  );
 }
 
 function dependencyLabel(code: number): School['dependency'] {
@@ -398,6 +424,103 @@ export const SCHOOLS: School[] = DATA.schools
       left.municipality.localeCompare(right.municipality, 'pt-BR') ||
       left.name.localeCompare(right.name, 'pt-BR'),
   );
+
+export function buildMunicipalityMetrics(
+  municipalityName: string,
+): TerritoryMetrics {
+  const municipality =
+    MUNICIPALITIES.find((item) => item.name === municipalityName) ??
+    MUNICIPALITIES[0];
+
+  return {
+    kind: 'municipality',
+    name: municipality.name,
+    eyebrow: 'Município do Maranhão',
+    schoolCount: municipality.schoolCount,
+    highSchoolCount: municipality.highSchoolCount,
+    enemRecords: municipality.enemRecords,
+    enemSchoolCount: municipality.enemSchoolCount,
+    linkedEnemSchoolCount: municipality.linkedEnemSchoolCount,
+    linkedCoveragePercentage: municipality.linkedCoveragePercentage,
+    participants: municipality.participants,
+    averages: {
+      cn: municipality.averages.cn,
+      ch: municipality.averages.ch,
+      lc: municipality.averages.lc,
+      mt: municipality.averages.mt,
+      essay: municipality.averages.essay,
+    },
+    infrastructure: municipality.infrastructure,
+  };
+}
+
+export const STATE_METRICS: TerritoryMetrics = {
+  kind: 'state',
+  name: 'Maranhão',
+  eyebrow: 'Visão estadual',
+  schoolCount: MUNICIPALITIES.reduce(
+    (total, municipality) => total + municipality.schoolCount,
+    0,
+  ),
+  highSchoolCount: MUNICIPALITIES.reduce(
+    (total, municipality) => total + municipality.highSchoolCount,
+    0,
+  ),
+  enemRecords: MUNICIPALITIES.reduce(
+    (total, municipality) => total + municipality.enemRecords,
+    0,
+  ),
+  enemSchoolCount: MUNICIPALITIES.reduce(
+    (total, municipality) => total + municipality.enemSchoolCount,
+    0,
+  ),
+  linkedEnemSchoolCount: MUNICIPALITIES.reduce(
+    (total, municipality) => total + municipality.linkedEnemSchoolCount,
+    0,
+  ),
+  linkedCoveragePercentage: (() => {
+    const highSchoolCount = MUNICIPALITIES.reduce(
+      (total, municipality) => total + municipality.highSchoolCount,
+      0,
+    );
+    const linkedSchoolCount = MUNICIPALITIES.reduce(
+      (total, municipality) => total + municipality.linkedEnemSchoolCount,
+      0,
+    );
+    return highSchoolCount ? (linkedSchoolCount / highSchoolCount) * 100 : 0;
+  })(),
+  participants: Object.fromEntries(
+    ENEM_AREA_KEYS.map((key) => [
+      key,
+      MUNICIPALITIES.reduce(
+        (total, municipality) => total + municipality.participants[key],
+        0,
+      ),
+    ]),
+  ) as Record<EnemAreaKey, number>,
+  averages: Object.fromEntries(
+    ENEM_AREA_KEYS.map((key) => [
+      key,
+      weightedAverage(
+        MUNICIPALITIES.map((municipality) => ({
+          value: municipality.averages[key],
+          weight: municipality.participants[key],
+        })),
+      ),
+    ]),
+  ) as Record<EnemAreaKey, number>,
+  infrastructure: Object.fromEntries(
+    INFRA_KEYS.map((key) => [
+      key,
+      weightedAverage(
+        MUNICIPALITIES.map((municipality) => ({
+          value: municipality.infrastructure[key],
+          weight: municipality.schoolCount,
+        })),
+      ),
+    ]),
+  ) as Record<InfraKey, number>,
+};
 
 export const DATA_MANIFEST = DATA.manifest;
 export const SAEB_CONTEXT = DATA.saeb;
