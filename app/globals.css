@@ -194,6 +194,11 @@ textarea,
   letter-spacing: -0.055em;
 }
 
+.atlas-assistant-heading {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.05;
+}
+
 .atlas-kpi-value {
   font-size: clamp(1.75rem, 7vw, 2.6rem);
   font-weight: 800;

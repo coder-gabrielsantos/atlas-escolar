@@ -291,7 +291,9 @@ export default function AssistantPage() {
         <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
           <div>
             <p className="atlas-eyebrow">Consulta inteligente da base</p>
-            <h1 className="atlas-page-heading mt-3">Converse com o Atlas.</h1>
+            <h1 className="atlas-page-heading atlas-assistant-heading mt-3">
+              Converse com o Atlas.
+            </h1>
           </div>
           <Button
             variant="outline"
