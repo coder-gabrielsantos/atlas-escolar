@@ -414,7 +414,7 @@ export default function AssistantPage() {
                         void send(draft);
                       }
                     }}
-                    placeholder="Ex.: quantos alunos fizeram o ENEM no IFMA de Coelho Neto?"
+                    placeholder="Digite aqui..."
                     aria-label="Faça sua pergunta ao Atlas"
                     className="max-h-32 min-h-12 resize-none border-0 bg-transparent px-2 py-3 text-sm shadow-none focus-visible:outline-none focus-visible:ring-0 sm:px-3"
                   />
